@@ -155,15 +155,15 @@ class AIProcessor:
     def generate_market_insights(self, df: pd.DataFrame) -> Optional[Dict]:
         """Generate AI-powered market insights from funding data"""
         try:
-            # Prepare data summary for AI analysis
+            # Prepare data summary for AI analysis with proper JSON serialization
             summary_data = {
-                "total_deals": len(df),
-                "total_funding": df['amount'].sum() if 'amount' in df.columns else 0,
-                "avg_deal_size": df['amount'].mean() if 'amount' in df.columns else 0,
-                "sectors": df['sector'].value_counts().to_dict() if 'sector' in df.columns else {},
-                "stages": df['stage'].value_counts().to_dict() if 'stage' in df.columns else {},
-                "regions": df['region'].value_counts().to_dict() if 'region' in df.columns else {},
-                "top_investors": df['lead_investor'].value_counts().head(10).to_dict() if 'lead_investor' in df.columns else {}
+                "total_deals": int(len(df)),
+                "total_funding": float(df['amount'].sum()) if 'amount' in df.columns else 0.0,
+                "avg_deal_size": float(df['amount'].mean()) if 'amount' in df.columns else 0.0,
+                "sectors": {str(k): int(v) for k, v in df['sector'].value_counts().to_dict().items()} if 'sector' in df.columns else {},
+                "stages": {str(k): int(v) for k, v in df['stage'].value_counts().to_dict().items()} if 'stage' in df.columns else {},
+                "regions": {str(k): int(v) for k, v in df['region'].value_counts().to_dict().items()} if 'region' in df.columns else {},
+                "top_investors": {str(k): int(v) for k, v in df['lead_investor'].value_counts().head(10).to_dict().items()} if 'lead_investor' in df.columns else {}
             }
             
             prompt = f"""
