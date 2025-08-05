@@ -20,13 +20,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for eco-friendly botanical design
+# Enhanced modern art botanical design system
 st.markdown("""
 <style>
-    /* Import fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    /* Import modern eco-conscious fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
     
-    /* Root variables for consistent theming */
+    /* Enhanced root variables for modern eco-aesthetic */
     :root {
         --forest-green: #1B4332;
         --sage-green: #52796F;
@@ -37,17 +37,88 @@ st.markdown("""
         --sunset-orange: #E76F51;
         --golden-yellow: #F4A261;
         --soft-gray: #6C7B7F;
+        --pale-blue: #E1F5FE;
+        --sand-tone: #F5F5DC;
+        --moss-green: #8FBC8F;
+        --recycled-white: #FEFFFE;
+        --glass-surface: rgba(255, 255, 255, 0.15);
     }
     
-    /* Main app styling */
+    /* Floating seed pod animations */
+    @keyframes floatSeed {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-10px) rotate(5deg); }
+    }
+    
+    @keyframes growVine {
+        0% { transform: scaleY(0); }
+        100% { transform: scaleY(1); }
+    }
+    
+    @keyframes leafSway {
+        0%, 100% { transform: rotate(-2deg); }
+        50% { transform: rotate(2deg); }
+    }
+    
+    @keyframes pulseEco {
+        0%, 100% { opacity: 0.6; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.02); }
+    }
+    
+    /* Main app with layered nature-inspired background */
     .stApp {
-        background: linear-gradient(135deg, var(--warm-cream) 0%, rgba(168, 218, 220, 0.1) 100%);
+        background: 
+            radial-gradient(circle at 20% 80%, rgba(168, 218, 220, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(241, 250, 238, 0.15) 0%, transparent 50%),
+            linear-gradient(135deg, var(--recycled-white) 0%, var(--pale-blue) 50%, var(--warm-cream) 100%);
+        position: relative;
+        min-height: 100vh;
     }
     
-    /* Sidebar enhancement */
+    /* Subtle texture overlay for recycled paper effect */
+    .stApp::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 2px,
+                rgba(168, 218, 220, 0.02) 2px,
+                rgba(168, 218, 220, 0.02) 4px
+            );
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    /* Enhanced sidebar with organic growth elements */
     .stSidebar {
-        background: linear-gradient(180deg, var(--warm-cream) 0%, var(--soft-mint) 100%);
-        border-right: 3px solid var(--sage-green);
+        background: 
+            linear-gradient(180deg, var(--recycled-white) 0%, var(--pale-blue) 50%, var(--soft-mint) 100%);
+        border-right: none;
+        position: relative;
+        backdrop-filter: blur(15px);
+        box-shadow: 2px 0 20px rgba(82, 121, 111, 0.1);
+    }
+    
+    /* Animated vine border */
+    .stSidebar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, 
+            var(--sage-green) 0%, 
+            var(--moss-green) 50%, 
+            var(--sage-green) 100%);
+        transform-origin: top;
+        animation: growVine 2s ease-out;
     }
     
     .stSidebar .stSelectbox label, .stSidebar .stDateInput label, .stSidebar .stTextInput label {
@@ -56,13 +127,41 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
     
-    /* Main content area */
+    /* Enhanced main content with floating glass morphism */
     .main .block-container {
-        background: rgba(255, 255, 255, 0.6);
-        border-radius: 20px;
-        padding: 2rem;
-        backdrop-filter: blur(10px);
+        background: var(--glass-surface);
+        border-radius: 30px;
+        padding: 3rem;
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(168, 218, 220, 0.2);
         position: relative;
+        box-shadow: 
+            0 8px 32px rgba(27, 67, 50, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        margin: 1rem;
+    }
+    
+    /* Floating organic decorations */
+    .main .block-container::before {
+        content: '🌱';
+        position: absolute;
+        top: -10px;
+        right: 30px;
+        font-size: 2rem;
+        animation: floatSeed 4s ease-in-out infinite;
+        z-index: 10;
+    }
+    
+    .main .block-container::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 20px;
+        width: 60px;
+        height: 20px;
+        background: radial-gradient(ellipse, rgba(143, 188, 143, 0.3) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: pulseEco 3s ease-in-out infinite;
     }
     
     /* Header styling */
@@ -78,72 +177,149 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
     
-    /* Metric cards styling */
+    /* Enhanced floating metric pods */
     [data-testid="metric-container"] {
-        background: rgba(255, 255, 255, 0.9);
-        border: 2px solid var(--soft-mint);
-        border-radius: 15px;
-        padding: 1.5rem;
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
+        background: var(--glass-surface);
+        border: 1px solid rgba(168, 218, 220, 0.3);
+        border-radius: 25px;
+        padding: 2rem;
+        backdrop-filter: blur(15px);
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
         position: relative;
         overflow: hidden;
+        box-shadow: 
+            0 4px 20px rgba(82, 121, 111, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
     
     [data-testid="metric-container"]:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(82, 121, 111, 0.15);
-        border-color: var(--sage-green);
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 
+            0 12px 40px rgba(82, 121, 111, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        border-color: var(--moss-green);
     }
     
+    /* Floating seed decoration */
     [data-testid="metric-container"]::before {
+        content: '●';
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        color: var(--moss-green);
+        font-size: 1.5rem;
+        animation: floatSeed 3s ease-in-out infinite;
+        opacity: 0.7;
+    }
+    
+    /* Organic growth line */
+    [data-testid="metric-container"]::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, 
+            var(--sage-green) 0%, 
+            var(--moss-green) 50%, 
+            var(--ocean-blue) 100%);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.6s ease;
+    }
+    
+    [data-testid="metric-container"]:hover::after {
+        transform: scaleX(1);
+    }
+    
+    /* Organic button design with energy flow */
+    .stButton > button {
+        background: linear-gradient(135deg, 
+            var(--forest-green) 0%, 
+            var(--sage-green) 50%, 
+            var(--moss-green) 100%);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 1rem 2rem;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(27, 67, 50, 0.2);
+    }
+    
+    .stButton > button::before {
         content: '';
         position: absolute;
         top: 0;
-        right: 0;
-        width: 50px;
-        height: 50px;
-        background: radial-gradient(circle, var(--soft-mint) 0%, transparent 70%);
-        opacity: 0.3;
-    }
-    
-    /* Button styling */
-    .stButton > button {
-        background: linear-gradient(135deg, var(--forest-green) 0%, var(--sage-green) 100%);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        padding: 0.75rem 1.5rem;
-        font-family: 'Inter', sans-serif;
-        font-weight: 500;
-        transition: all 0.3s ease;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(255, 255, 255, 0.2), 
+            transparent);
+        transition: left 0.6s ease;
     }
     
     .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(27, 67, 50, 0.3);
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 25px rgba(27, 67, 50, 0.3);
     }
     
-    /* Tab styling */
+    .stButton > button:hover::before {
+        left: 100%;
+    }
+    
+    /* Organic tab system with growth metaphor */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background: rgba(168, 218, 220, 0.2);
-        border-radius: 10px;
-        padding: 0.5rem;
+        gap: 12px;
+        background: var(--glass-surface);
+        border-radius: 20px;
+        padding: 0.75rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(168, 218, 220, 0.2);
+        box-shadow: 0 2px 10px rgba(82, 121, 111, 0.1);
     }
     
     .stTabs [data-baseweb="tab"] {
-        border-radius: 8px;
+        border-radius: 15px;
         color: var(--sage-green);
         font-family: 'Inter', sans-serif;
         font-weight: 500;
         background: transparent;
         border: none;
+        padding: 0.75rem 1.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .stTabs [data-baseweb="tab"]::after {
+        content: '';
+        position: absolute;
+        bottom: 2px;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: var(--moss-green);
+        transform: translateX(-50%);
+        transition: width 0.3s ease;
     }
     
     .stTabs [aria-selected="true"] {
-        background: var(--forest-green);
+        background: linear-gradient(135deg, 
+            var(--forest-green) 0%, 
+            var(--sage-green) 100%);
         color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(27, 67, 50, 0.2);
+    }
+    
+    .stTabs [data-baseweb="tab"]:hover::after {
+        width: 80%;
     }
     
     /* Dataframe styling */
@@ -180,11 +356,59 @@ st.markdown("""
         overflow: hidden;
     }
     
-    /* Custom botanical decorations */
+    /* Enhanced botanical decorations with animation */
+    .botanical-header {
+        position: relative;
+        display: inline-block;
+    }
+    
     .botanical-header::after {
         content: '🌿';
-        margin-left: 0.5rem;
-        opacity: 0.7;
+        margin-left: 0.75rem;
+        opacity: 0.8;
+        display: inline-block;
+        animation: leafSway 4s ease-in-out infinite;
+    }
+    
+    .botanical-header::before {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, 
+            var(--sage-green) 0%, 
+            var(--moss-green) 50%, 
+            var(--ocean-blue) 100%);
+        transform: scaleX(0);
+        transform-origin: left;
+        animation: growVine 2s ease-out 0.5s forwards;
+    }
+    
+    /* Floating elements for immersive experience */
+    .floating-element {
+        position: fixed;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0.1;
+        font-size: 1.5rem;
+        animation: floatSeed 6s ease-in-out infinite;
+    }
+    
+    .floating-element:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+    .floating-element:nth-child(2) { top: 20%; right: 8%; animation-delay: 2s; }
+    .floating-element:nth-child(3) { bottom: 30%; left: 10%; animation-delay: 4s; }
+    
+    /* Responsive glass morphism containers */
+    .glass-container {
+        background: var(--glass-surface);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin: 1rem 0;
     }
     
     /* Loading spinner customization */
@@ -211,10 +435,25 @@ def init_components():
 def main():
     scraper, ai_processor, data_manager = init_components()
     
-    # Header with botanical styling
+    # Add floating elements for immersive experience
+    st.markdown("""
+    <div class="floating-element">🌱</div>
+    <div class="floating-element">🍃</div>
+    <div class="floating-element">🌿</div>
+    """, unsafe_allow_html=True)
+    
+    # Enhanced header with botanical styling
     st.markdown('<h1 class="botanical-header">🌱 Climate Tech Funding Tracker</h1>', unsafe_allow_html=True)
-    st.markdown("*AI-powered real-time analysis of climate technology investments*")
-    st.markdown("---")
+    st.markdown("""
+    <div class="glass-container">
+        <p style="margin: 0; font-style: italic; color: var(--sage-green); font-size: 1.1rem;">
+            AI-powered real-time analysis of climate technology investments
+        </p>
+        <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: var(--soft-gray);">
+            Sustainable funding intelligence for a regenerative future 🌍
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Sidebar
     with st.sidebar:
@@ -359,31 +598,43 @@ def main():
                 except Exception as e:
                     st.error(f"Export error: {str(e)}")
         
-        # Main dashboard
+        # Enhanced main dashboard with immersive design
         if not df.empty:
-            # Key metrics
+            # Beautiful section header
+            st.markdown("""
+            <div class="glass-container" style="text-align: center; margin: 2rem 0;">
+                <h2 style="color: var(--forest-green); margin-bottom: 0.5rem; font-family: 'Crimson Text', serif;">
+                    🌍 Market Intelligence Dashboard
+                </h2>
+                <p style="color: var(--sage-green); margin: 0;">
+                    Real-time insights from the climate tech ecosystem
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Floating metric pods
             col1, col2, col3, col4 = st.columns(4)
             
             with col1:
                 total_funding = df['amount'].sum() if 'amount' in df.columns else 0
                 st.metric(
-                    "Total Funding",
+                    "🌱 Total Funding",
                     format_currency(total_funding),
-                    help="Total funding amount in filtered data"
+                    help="Total funding flowing into climate innovation"
                 )
             
             with col2:
                 deal_count = len(df)
                 st.metric(
-                    "Active Deals",
+                    "🤝 Active Deals",
                     deal_count,
-                    help="Number of funding events in filtered data"
+                    help="Investment rounds accelerating climate solutions"
                 )
             
             with col3:
                 avg_deal = total_funding / deal_count if deal_count > 0 else 0
                 st.metric(
-                    "Avg Deal Size",
+                    "💰 Avg Deal Size",
                     format_currency(avg_deal),
                     help="Average funding amount per deal"
                 )
