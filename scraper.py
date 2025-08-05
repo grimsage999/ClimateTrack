@@ -102,8 +102,7 @@ class FundingScraper:
         
         climate_sources = [
             "https://www.greentechmedia.com/",
-            "https://www.cleantech.com/",
-            "https://climatetech.blog/"
+            "https://www.cleantech.com/"
         ]
         
         for url in climate_sources:

@@ -1,0 +1,562 @@
+Climate Tech Funding Tracker - Eco-Friendly Modern Art Aesthetic Design Prompt
+Core Design Directive
+Design a beautiful, plant-decorated eco-friendly modern art aesthetic for the climate tech funding tracker that enhances user experience while preserving all existing functionality. The design should reflect the environmental mission of the platform through organic, sustainable, and nature-inspired visual elements.
+
+CRITICAL REQUIREMENT: All current features, filters, search capabilities, data displays, and interactive elements must remain fully functional and accessible. The aesthetic enhancement should layer over existing functionality without compromising usability or performance.
+
+Design Philosophy:
+- Biophilic design principles with digital plant integration
+- Sustainable color palettes inspired by nature
+- Modern minimalism with organic flourishes
+- Growth and prosperity metaphors through botanical elements
+- Clean, professional appearance suitable for investor audiences
+- Accessibility-first approach with WCAG compliance
+Visual Design System
+1.1 Color Palette Development
+Create a sophisticated eco-friendly color system with these specifications:
+
+Primary Palette:
+- Deep Forest Green: #1B4332 (headers, primary buttons, key data points)
+- Sage Green: #52796F (secondary elements, borders, accents)
+- Soft Mint: #A8DADC (backgrounds, subtle highlights)
+- Warm Cream: #F1FAEE (main background, card backgrounds)
+- Earth Brown: #8B4513 (text accents, organic elements)
+
+Secondary Palette:
+- Ocean Blue: #457B9D (funding amount highlights, links)
+- Sunset Orange: #E76F51 (alert colors, call-to-action elements)
+- Golden Yellow: #F4A261 (warning states, highlights)
+- Soft Gray: #6C7B7F (secondary text, inactive states)
+- Pure White: #FFFFFF (contrast elements, clean spaces)
+
+Implementation Requirements:
+- Ensure AAA contrast ratios for all text combinations
+- Create hover states and interaction feedback using palette variations
+- Develop opacity and gradient variations for depth
+- Design dark mode alternative maintaining plant aesthetic
+- Test colorblind accessibility across all palette combinations
+
+Design Application:
+- Use forest green for data hierarchy and importance
+- Apply mint and cream for calming background experiences
+- Integrate earth tones for organic, grounded feeling
+- Reserve bright colors (orange, yellow) for key metrics and alerts
+- Maintain professional credibility while embracing natural warmth
+1.2 Plant-Inspired Visual Elements
+Design a comprehensive library of plant-inspired visual elements that integrate seamlessly with data visualization and interface components:
+
+Botanical Illustration Style:
+- Hand-drawn aesthetic with digital precision
+- Line art style: delicate, organic curves with varying line weights
+- Minimalist approach: suggestion rather than detailed realism
+- Scalable vector graphics for crisp display at all sizes
+- Subtle animations: gentle swaying, growth effects, seasonal changes
+
+Plant Element Categories:
+
+1. Header Decorations:
+   - Climbing vine borders that frame navigation elements
+   - Delicate leaf patterns that don't interfere with text readability
+   - Branch-like dividers between major sections
+   - Organic corner flourishes for cards and containers
+
+2. Data Visualization Enhancements:
+   - Tree ring patterns for time-series data backgrounds
+   - Branch-like connection lines in network diagrams
+   - Leaf-shaped data points in scatter plots
+   - Root system metaphors for investor relationship maps
+   - Growth ring patterns for funding stage progressions
+
+3. Interactive Elements:
+   - Buttons with subtle leaf textures or organic shapes
+   - Hover effects that bloom like flowers opening
+   - Loading animations using growing plant metaphors
+   - Progress bars styled as growing vines or stems
+   - Form elements with organic, rounded botanical shapes
+
+4. Background Elements:
+   - Subtle watermark patterns of botanical silhouettes
+   - Corner decorations with delicate fern fronds
+   - Section dividers using branch or root motifs
+   - Gentle gradient overlays with organic, flowing shapes
+   - Depth-creating shadows with natural, irregular edges
+
+Technical Implementation:
+- SVG format for scalability and performance
+- CSS animations with reduced motion respect
+- Layered approach: decorative elements on separate z-index
+- Modular component system for consistent application
+- Performance optimization: lazy loading for complex illustrations
+1.3 Typography and Layout Harmony
+Develop a typography system that complements the organic aesthetic while maintaining professional readability:
+
+Font Selection Criteria:
+- Primary: Modern sans-serif with organic, slightly rounded letterforms
+- Secondary: Clean, geometric font for data and numbers
+- Accent: Elegant serif for headlines with subtle organic character
+- Monospace: Clean, readable font for code and technical data
+
+Recommended Font Combinations:
+- Primary: 'Inter' or 'Poppins' (warm, approachable sans-serif)
+- Data/Numbers: 'JetBrains Mono' or 'Fira Code' (technical clarity)
+- Headlines: 'Playfair Display' or 'Crimson Text' (elegant, natural)
+- Body: 'Source Sans Pro' or 'Open Sans' (excellent readability)
+
+Typography Hierarchy:
+- H1: 32-40px, botanical accent font, forest green
+- H2: 24-28px, primary font, sage green with subtle plant motif
+- H3: 20-22px, primary font, earth brown
+- Body: 16-18px, high contrast, comfortable line spacing (1.6-1.8)
+- Caption: 14px, soft gray, supporting information
+- Data: Monospace font, high contrast, tabular formatting
+
+Layout Principles:
+- Organic grid system: slight variations from strict geometric alignment
+- Generous white space suggesting natural breathing room
+- Asymmetrical balance inspired by natural growth patterns
+- Content containers with subtle organic shapes (rounded corners, gentle curves)
+- Visual rhythm that flows like natural patterns
+Streamlit-Specific Implementation
+2.1 Custom CSS Integration
+Create comprehensive custom CSS that transforms the Streamlit interface while preserving functionality:
+
+Streamlit Component Styling:
+
+1. Sidebar Enhancement:
+   ```css
+   .stSidebar {
+       background: linear-gradient(180deg, #F1FAEE 0%, #A8DADC 100%);
+       border-right: 3px solid #52796F;
+       position: relative;
+   }
+   
+   .stSidebar::before {
+       content: '';
+       position: absolute;
+       top: 0;
+       right: 0;
+       width: 50px;
+       height: 100%;
+       background: url('vine-border.svg') repeat-y;
+       opacity: 0.3;
+   }
+
+Main Content Area:
+css.main .block-container {
+    background: linear-gradient(135deg, #F1FAEE 0%, rgba(168, 218, 220, 0.1) 100%);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.main .block-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('subtle-botanical-pattern.svg');
+    opacity: 0.05;
+    z-index: -1;
+}
+
+Metric Cards Styling:
+css[data-testid="metric-container"] {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #A8DADC;
+    border-radius: 15px;
+    padding: 20px;
+    position: relative;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+[data-testid="metric-container"]:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(82, 121, 111, 0.15);
+    border-color: #52796F;
+}
+
+[data-testid="metric-container"]::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    background: url('leaf-icon.svg') no-repeat center;
+    background-size: contain;
+    opacity: 0.6;
+}
+
+
+Implementation Strategy:
+
+Use st.markdown() with unsafe_allow_html=True for CSS injection
+Create modular CSS classes for different component types
+Implement responsive design principles for mobile compatibility
+Test across different browsers and devices
+Optimize for performance with efficient CSS selectors
+
+
+### 2.2 Interactive Plant Elements
+Design interactive botanical elements that respond to user actions and data states:
+Dynamic Growth Animations:
+
+Funding Progress Trees:
+
+Visualize company funding stages as tree growth
+Seed stage: small sprout
+Series A/B/C: progressively larger tree with more branches
+Mature companies: full, flourishing trees
+Animation: gentle swaying, seasonal leaf changes
+
+
+Investment Flow Vines:
+
+Show investor connections as growing vine networks
+Active investors: vibrant, growing vines
+Dormant investors: subtle, minimal vine presence
+New investments: vine growth animation from investor to company
+
+
+Sector Health Gardens:
+
+Different climate tech sectors as different plant types
+Solar: sunflowers that track data points
+Wind: swaying grass patterns
+Carbon capture: air-purifying plants
+Health based on funding volume: lush vs sparse vegetation
+
+
+
+Interactive Hover Effects:
+css.funding-card {
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.funding-card::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: url('growing-vine-border.svg');
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: -1;
+}
+
+.funding-card:hover::before {
+    opacity: 0.7;
+    animation: vineGrowth 2s ease-in-out;
+}
+
+@keyframes vineGrowth {
+    0% { 
+        clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
+    }
+    100% { 
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    }
+}
+Seasonal Theme System:
+
+Spring: fresh green growth, new funding emphasis
+Summer: full bloom, peak activity visualization
+Fall: golden tones, harvest/exit emphasis
+Winter: minimal, focused on core data structure
+Auto-rotation based on real calendar or data patterns
+
+
+### 2.3 Data Visualization Botanical Enhancement
+Transform standard charts and graphs with botanical aesthetic while maintaining data clarity:
+Chart Styling Enhancements:
+
+Time Series Charts (Funding Trends):
+python# Custom Plotly styling for organic feel
+chart_config = {
+    'displayModeBar': False,
+    'layout': {
+        'plot_bgcolor': 'rgba(241, 250, 238, 0.8)',
+        'paper_bgcolor': 'rgba(255, 255, 255, 0)',
+        'font': {'family': 'Inter, sans-serif', 'color': '#1B4332'},
+        'xaxis': {
+            'gridcolor': 'rgba(168, 218, 220, 0.5)',
+            'linecolor': '#52796F',
+            'tickcolor': '#52796F'
+        },
+        'yaxis': {
+            'gridcolor': 'rgba(168, 218, 220, 0.5)',
+            'linecolor': '#52796F',
+            'tickcolor': '#52796F'
+        }
+    },
+    'data': [{
+        'line': {
+            'color': '#1B4332',
+            'width': 3,
+            'shape': 'spline'  # Organic curve
+        },
+        'fill': 'tonexty',
+        'fillcolor': 'rgba(168, 218, 220, 0.3)'
+    }]
+}
+
+Category Distribution (Pie/Donut Charts):
+
+Use botanical color gradients for segments
+Center with plant icon representing overall climate tech
+Organic, slightly irregular segment shapes
+Hover effects with growing animation
+
+
+Geographic Heat Maps:
+
+Earth-tone color gradients (greens to browns)
+Organic shape overlays suggesting natural regions
+Plant icons marking major funding centers
+Subtle texture overlays suggesting topography
+
+
+Network Diagrams (Investor Relations):
+
+Nodes styled as different plant types
+Connections as vine or root systems
+Organic clustering rather than rigid geometric layouts
+Growth animations for new connections
+
+
+Bar Charts and Histograms:
+
+Bars styled as growing stems or bamboo segments
+Organic texture overlays maintaining data accuracy
+Natural color progressions from earth to forest tones
+Subtle shadow effects creating depth
+
+
+
+Implementation Framework:
+
+Custom Plotly themes with botanical aesthetics
+SVG pattern overlays for texture without data distortion
+Consistent color mapping across all visualization types
+Performance optimization for complex organic shapes
+Accessibility compliance with clear data distinction
+
+
+## User Experience Enhancement
+
+### 3.1 Micro-Interactions and Animations
+Design subtle, delightful micro-interactions that reinforce the botanical theme:
+Loading States:
+
+Data Loading Animation:
+
+Growing plant from seed to full bloom
+Progress indicated by growth stages
+Different plants for different data types
+Smooth, organic timing curves
+
+
+Search Processing:
+
+Gentle pulse of leaf elements
+Vine growth across search bar
+Subtle color shifts from sage to forest green
+Organic, breathing animation rhythm
+
+
+
+Page Transitions:
+
+Section Changes:
+
+Fade transitions with particle effects like falling leaves
+Gentle sliding with organic easing functions
+Content morphing with growth-like expansion
+Preserved context through consistent plant elements
+
+
+Filter Applications:
+
+Smooth data reorganization with plant-themed transitions
+Visual feedback through color and movement
+Organic clustering and regrouping animations
+Maintained user orientation through consistent layout
+
+
+
+Interactive Feedback:
+css.interactive-element {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+}
+
+.interactive-element:hover {
+    transform: translateY(-2px);
+}
+
+.interactive-element:active {
+    transform: scale(0.98);
+}
+
+.interactive-element::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #52796F, #A8DADC);
+    transition: all 0.4s ease;
+    transform: translateX(-50%);
+}
+
+.interactive-element:hover::after {
+    width: 100%;
+}
+Performance Considerations:
+
+Use CSS transforms for smooth 60fps animations
+Implement reduced motion preferences
+Optimize for mobile device performance
+Progressive enhancement for older browsers
+
+
+### 3.2 Accessibility and Inclusivity
+Ensure the botanical aesthetic enhances rather than hinders accessibility:
+Visual Accessibility:
+
+Color Contrast Requirements:
+
+Maintain WCAG AAA standards (7:1 ratio minimum)
+Test with colorblind simulation tools
+Provide alternative visual cues beyond color
+Ensure plant decorations don't obscure important text
+
+
+Motion and Animation:
+
+Respect prefers-reduced-motion CSS media query
+Provide static alternatives for animated elements
+Keep essential animations subtle and purposeful
+Offer user controls for animation preferences
+
+
+Visual Clarity:
+
+Maintain clear visual hierarchy despite decorative elements
+Ensure plant decorations are clearly distinguished from interactive elements
+Provide sufficient white space for comfortable reading
+Test with screen magnification tools
+
+
+
+Screen Reader Optimization:
+
+Semantic Structure:
+
+Use proper heading hierarchy
+Implement ARIA labels for decorative elements
+Ensure plant graphics are marked as decorative (aria-hidden="true")
+Provide alternative text for meaningful botanical illustrations
+
+
+Navigation Enhancement:
+
+Maintain logical tab order despite visual decorations
+Provide skip links for major sections
+Ensure keyboard navigation highlights are visible against botanical backgrounds
+Test with screen reader software (NVDA, JAWS, VoiceOver)
+
+
+
+Implementation Guidelines:
+css/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .botanical-decoration {
+        opacity: 0.2;
+    }
+    
+    .interactive-element {
+        border: 2px solid;
+    }
+}
+
+/* Focus management */
+.interactive-element:focus {
+    outline: 3px solid #E76F51;
+    outline-offset: 2px;
+    background: rgba(241, 250, 238, 0.9);
+}
+
+## Implementation Timeline
+
+### Week 1: Foundation and Color System
+Implementation Checklist:
+Day 1-2: Color Palette Implementation
+
+ Define CSS custom properties for color system
+ Test contrast ratios across all combinations
+ Create color utility classes for consistent application
+ Implement dark mode alternatives
+ Test colorblind accessibility
+
+Day 3-4: Typography System
+
+ Integrate selected fonts via Google Fonts or local hosting
+ Define typography scale and hierarchy
+ Create responsive typography rules
+ Test readability across devices
+ Implement font loading optimization
+
+Day 5-7: Basic Layout Enhancement
+
+ Apply background colors and gradients
+ Implement organic border radius and spacing
+ Create basic card and container styling
+ Test responsive behavior
+ Ensure all existing functionality remains intact
+
+
+### Week 2: Botanical Elements and Interactions
+Implementation Checklist:
+Day 1-3: SVG Asset Creation
+
+ Design and create botanical SVG elements
+ Optimize SVGs for web performance
+ Create scalable icon system
+ Implement asset loading strategy
+ Test cross-browser compatibility
+
+Day 4-5: Micro-Interactions
+
+ Implement hover effects and transitions
+ Create loading animations with botanical themes
+ Add interactive feedback for user actions
+ Test animation performance
+ Implement reduced motion preferences
+
+Day 6-7: Advanced Styling
+
+ Enhance Streamlit components with custom CSS
+ Create chart styling with botanical aesthetics
+ Implement advanced visual effects
+ Conduct comprehensive testing
+ Optimize for mobile devices
+
+
+This prompt provides a comprehensive guide for creating a beautiful, plant-decorated eco-friendly aesthetic that will transform your climate tech funding tracker into a visually stunning platform while maintaining all functionality and ensuring professional credibility for your investor audience.
