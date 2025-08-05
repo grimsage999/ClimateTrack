@@ -614,6 +614,25 @@ def main():
                                 </div>
                                 """, unsafe_allow_html=True)
                                 st.markdown(insights.get('analysis', 'No analysis available'))
+                                
+                                # Additional insight sections if available
+                                if insights.get('recommendations'):
+                                    st.markdown("""
+                                    <div style="background: linear-gradient(135deg, rgba(168, 218, 220, 0.1) 0%, rgba(241, 250, 238, 0.8) 100%); 
+                                               border-radius: 15px; padding: 20px; margin: 10px 0; border-left: 4px solid #F4A261;">
+                                        <h3 style="color: #1B4332; margin-bottom: 15px;">🎯 Strategic Recommendations</h3>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                                    st.markdown(insights.get('recommendations'))
+                                
+                                if insights.get('risk_factors'):
+                                    st.markdown("""
+                                    <div style="background: linear-gradient(135deg, rgba(168, 218, 220, 0.1) 0%, rgba(241, 250, 238, 0.8) 100%); 
+                                               border-radius: 15px; padding: 20px; margin: 10px 0; border-left: 4px solid #E76F51;">
+                                        <h3 style="color: #1B4332; margin-bottom: 15px;">⚠️ Risk Factors</h3>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                                    st.markdown(insights.get('risk_factors'))
                             else:
                                 st.warning("Unable to generate insights at this time")
                         except Exception as e:
