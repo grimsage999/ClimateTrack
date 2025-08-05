@@ -1,0 +1,21 @@
+You are a UI/UX and visual design system expert. Your task is to evolve an existing web application into a modern, immersive, plant-inspired interface while preserving all interactive functions, layout integrity, and core data visualization components.
+Design Goal: Enhance the visual language with a clean, modern art aesthetic that reflects ecological mindfulness, growth, and nature-based innovation—while maintaining clarity and user usability for real-time funding tracking.
+🔧 Requirements:
+* Preserve existing app structure, widgets, and functionality (e.g., filters, search, tables, charts).
+* Wrap the layout with plant-inspired visual elements (e.g., vines, leaf motifs, organic curves) using lightweight SVGs, CSS, or subtle animations.
+* Use a minimalist, clean UI style: soft neutrals, whites, light greens, sand tones, pale blues—balanced by vibrant plant accents.
+* Include floating or spinning interactive widgets as visual metaphors (e.g., floating seed pods for data points, circular rotating filters, or animated roots on load).
+* Incorporate eco-conscious textures or patterns subtly in backgrounds or panels (e.g., recycled paper grain, moss overlays, glassy surfaces).
+* Design components that visually reflect sustainability and regeneration (e.g., smooth rounded cards, energy-flow lines, solar-themed highlights).
+* Ensure mobile-responsive, fast-loading design with accessibility and legibility in mind.
+* Use visual layering to guide the eye without clutter (e.g., background vines that don’t interfere with readability).
+💡 Inspiration Sources:
+* Scandinavian eco-modern interior design
+* Japanese wabi-sabi minimalism with a botanical flair
+* Nature-themed data art and generative garden visuals
+* Sustainable branding (e.g., Patagonia, Ecosia, Future Earth)
+🧩 Output Format:
+
+* Style guide for colors, typography, iconography, and motion
+* Annotated description of how each visual element relates to climate or nature
+* Guidelines for developers to implement with minimal disruption
