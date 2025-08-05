@@ -1,0 +1,462 @@
+import React, { useState, useEffect } from 'react';
+import { Search, Filter, TrendingUp, Globe, DollarSign, Users, BarChart3, Download, Eye, Calendar, MapPin, Building } from 'lucide-react';
+
+const ClimateFundingTracker = () => {
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedSector, setSelectedSector] = useState('all');
+  const [selectedStage, setSelectedStage] = useState('all');
+  const [selectedRegion, setSelectedRegion] = useState('all');
+  const [fundingData, setFundingData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // Mock funding data - in production, this would come from your AI-powered data pipeline
+  const mockFundingData = [
+    {
+      id: 1,
+      company: "SolarFlow Technologies",
+      sector: "Solar Energy",
+      stage: "Series B",
+      amount: 45000000,
+      lead_investor: "Breakthrough Energy Ventures",
+      date: "2025-01-28",
+      location: "San Francisco, CA",
+      description: "AI-powered solar panel optimization platform",
+      insights: "Strong growth in residential solar automation sector"
+    },
+    {
+      id: 2,
+      company: "CarbonCapture Labs",
+      sector: "Carbon Capture",
+      stage: "Series A",
+      amount: 25000000,
+      lead_investor: "Climate Pledge Fund",
+      date: "2025-01-25",
+      location: "Boston, MA",
+      description: "Direct air capture technology for industrial applications",
+      insights: "DAC technology gaining traction with corporate buyers"
+    },
+    {
+      id: 3,
+      company: "GreenGrid Analytics",
+      sector: "Energy Storage",
+      stage: "Seed",
+      amount: 8500000,
+      lead_investor: "Energy Impact Partners",
+      date: "2025-01-22",
+      location: "Austin, TX",
+      description: "Grid-scale battery optimization using machine learning",
+      insights: "Rising investment in grid stability solutions"
+    },
+    {
+      id: 4,
+      company: "EcoTransport Solutions",
+      sector: "Sustainable Transport",
+      stage: "Series C",
+      amount: 75000000,
+      lead_investor: "TPG Rise",
+      date: "2025-01-20",
+      location: "London, UK",
+      description: "Electric vehicle fleet management platform",
+      insights: "European EV infrastructure market expanding rapidly"
+    },
+    {
+      id: 5,
+      company: "AgroTech Innovations",
+      sector: "Agriculture Tech",
+      stage: "Series A",
+      amount: 18000000,
+      lead_investor: "S2G Ventures",
+      date: "2025-01-18",
+      location: "Amsterdam, NL",
+      description: "Precision agriculture using satellite imagery and AI",
+      insights: "AgTech seeing increased focus on sustainability metrics"
+    }
+  ];
+
+  useEffect(() => {
+    setFundingData(mockFundingData);
+  }, []);
+
+  const sectors = ['All', 'Solar Energy', 'Carbon Capture', 'Energy Storage', 'Sustainable Transport', 'Agriculture Tech', 'Green Building', 'Clean Water'];
+  const stages = ['All', 'Pre-Seed', 'Seed', 'Series A', 'Series B', 'Series C', 'Growth'];
+  const regions = ['All', 'North America', 'Europe', 'Asia Pacific', 'Latin America'];
+
+  const filteredData = fundingData.filter(deal => {
+    const matchesSearch = deal.company.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         deal.sector.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         deal.lead_investor.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSector = selectedSector === 'all' || deal.sector === selectedSector;
+    const matchesStage = selectedStage === 'all' || deal.stage === selectedStage;
+    // Simple region matching - in production, you'd have more sophisticated geo-mapping
+    const matchesRegion = selectedRegion === 'all' || 
+                         (selectedRegion === 'North America' && (deal.location.includes('CA') || deal.location.includes('TX'))) ||
+                         (selectedRegion === 'Europe' && (deal.location.includes('UK') || deal.location.includes('NL')));
+    
+    return matchesSearch && matchesSector && matchesStage && matchesRegion;
+  });
+
+  const totalFunding = filteredData.reduce((sum, deal) => sum + deal.amount, 0);
+  const avgDealSize = filteredData.length > 0 ? totalFunding / filteredData.length : 0;
+
+  const formatCurrency = (amount) => {
+    if (amount >= 1000000000) return `$${(amount / 1000000000).toFixed(1)}B`;
+    if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`;
+    return `$${(amount / 1000).toFixed(0)}K`;
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+  };
+
+  const DashboardView = () => (
+    <div className="space-y-6">
+      {/* Key Metrics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-sage-200/50 hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-sage-700">Total Funding (Jan 2025)</p>
+              <p className="text-2xl font-bold text-slate-800">{formatCurrency(totalFunding)}</p>
+            </div>
+            <div className="p-2 bg-emerald-100 rounded-xl">
+              <DollarSign className="h-6 w-6 text-emerald-700" />
+            </div>
+          </div>
+          <p className="text-xs text-sage-600 mt-2">+23% vs Dec 2024</p>
+        </div>
+
+        <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-sage-200/50 hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-sage-700">Active Deals</p>
+              <p className="text-2xl font-bold text-slate-800">{filteredData.length}</p>
+            </div>
+            <div className="p-2 bg-teal-100 rounded-xl">
+              <TrendingUp className="h-6 w-6 text-teal-700" />
+            </div>
+          </div>
+          <p className="text-xs text-sage-600 mt-2">5 new this week</p>
+        </div>
+
+        <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-sage-200/50 hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-sage-700">Avg Deal Size</p>
+              <p className="text-2xl font-bold text-slate-800">{formatCurrency(avgDealSize)}</p>
+            </div>
+            <div className="p-2 bg-slate-100 rounded-xl">
+              <BarChart3 className="h-6 w-6 text-slate-700" />
+            </div>
+          </div>
+          <p className="text-xs text-sage-600 mt-2">+15% vs Q4 2024</p>
+        </div>
+
+        <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-sage-200/50 hover:shadow-md transition-shadow">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-sage-700">Active Investors</p>
+              <p className="text-2xl font-bold text-slate-800">47</p>
+            </div>
+            <div className="p-2 bg-emerald-100 rounded-xl">
+              <Users className="h-6 w-6 text-emerald-700" />
+            </div>
+          </div>
+          <p className="text-xs text-sage-600 mt-2">12 new entries</p>
+        </div>
+      </div>
+
+      {/* Market Intelligence Widget */}
+      <div className="bg-gradient-to-br from-emerald-50/80 to-teal-50/60 backdrop-blur-sm rounded-xl p-6 border border-emerald-200/50 relative overflow-hidden">
+        {/* Decorative leaf */}
+        <div className="absolute top-4 right-4 opacity-20">
+          <div className="w-8 h-4 bg-emerald-400 rounded-full transform rotate-12"></div>
+        </div>
+        <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+          🌱 AI Market Intelligence
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-white/50">
+            <h4 className="font-medium text-slate-800 mb-2 flex items-center">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></div>
+              Emerging Trends
+            </h4>
+            <ul className="text-sm text-sage-700 space-y-1">
+              <li>• AI-powered grid optimization seeing 40% funding increase</li>
+              <li>• Corporate DAC purchases driving Series A rounds</li>
+              <li>• European EV infrastructure gap creating opportunities</li>
+            </ul>
+          </div>
+          <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-white/50">
+            <h4 className="font-medium text-slate-800 mb-2 flex items-center">
+              <div className="w-2 h-2 bg-teal-500 rounded-full mr-2"></div>
+              Underserved Sectors
+            </h4>
+            <ul className="text-sm text-sage-700 space-y-1">
+              <li>• Green building materials (only 8% of funding)</li>
+              <li>• Industrial decarbonization tools</li>
+              <li>• Climate adaptation technologies</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Activity Feed */}
+      <div className="bg-white/70 backdrop-blur-sm rounded-xl shadow-sm border border-sage-200/50">
+        <div className="px-6 py-4 border-b border-sage-200/50">
+          <h3 className="text-lg font-semibold text-slate-800 flex items-center">
+            <div className="w-6 h-3 bg-emerald-400 rounded-full mr-3 opacity-60"></div>
+            Recent Funding Activity
+          </h3>
+        </div>
+        <div className="divide-y divide-sage-200/50">
+          {filteredData.slice(0, 3).map((deal) => (
+            <div key={deal.id} className="p-6 hover:bg-sage-50/50 transition-colors">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2">
+                    <h4 className="font-medium text-slate-800">{deal.company}</h4>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
+                      {deal.stage}
+                    </span>
+                  </div>
+                  <p className="text-sm text-sage-700 mt-1">{deal.description}</p>
+                  <div className="flex items-center space-x-4 mt-2 text-sm text-sage-600">
+                    <span className="flex items-center">
+                      <MapPin className="h-4 w-4 mr-1" />
+                      {deal.location}
+                    </span>
+                    <span className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      {formatDate(deal.date)}
+                    </span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-lg font-semibold text-slate-800">{formatCurrency(deal.amount)}</p>
+                  <p className="text-sm text-sage-600">Led by {deal.lead_investor}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const FundingTrackerView = () => (
+    <div className="space-y-6">
+      {/* Search and Filters */}
+      <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-sage-200/50">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="h-5 w-5 absolute left-3 top-3 text-sage-500" />
+            <input
+              type="text"
+              placeholder="Search companies, investors, or sectors..."
+              className="w-full pl-10 pr-4 py-2 border border-sage-300/50 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/50 backdrop-blur-sm transition-colors"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <select
+            className="px-3 py-2 border border-sage-300/50 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/50 backdrop-blur-sm text-sage-700"
+            value={selectedSector}
+            onChange={(e) => setSelectedSector(e.target.value)}
+          >
+            {sectors.map(sector => (
+              <option key={sector} value={sector.toLowerCase()}>{sector}</option>
+            ))}
+          </select>
+          <select
+            className="px-3 py-2 border border-sage-300/50 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/50 backdrop-blur-sm text-sage-700"
+            value={selectedStage}
+            onChange={(e) => setSelectedStage(e.target.value)}
+          >
+            {stages.map(stage => (
+              <option key={stage} value={stage.toLowerCase()}>{stage}</option>
+            ))}
+          </select>
+          <select
+            className="px-3 py-2 border border-sage-300/50 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/50 backdrop-blur-sm text-sage-700"
+            value={selectedRegion}
+            onChange={(e) => setSelectedRegion(e.target.value)}
+          >
+            {regions.map(region => (
+              <option key={region} value={region}>{region}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Results Summary */}
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-sage-700">
+          Showing {filteredData.length} funding events • Total: {formatCurrency(totalFunding)}
+        </p>
+        <button className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-700 hover:to-teal-700 shadow-sm transition-all">
+          <Download className="h-4 w-4" />
+          <span>Export Data</span>
+        </button>
+      </div>4 w-4" />
+          <span>Export Data</span>
+        </button>
+      </div>
+
+      {/* Deal Cards */}
+      <div className="grid gap-6">
+        {filteredData.map((deal) => (
+          <div key={deal.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex-1">
+                <div className="flex items-center space-x-3 mb-2">
+                  <h3 className="text-xl font-semibold text-gray-900">{deal.company}</h3>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-100 text-emerald-800">
+                    {deal.sector}
+                  </span>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                    {deal.stage}
+                  </span>
+                </div>
+                <p className="text-gray-600 mb-3">{deal.description}</p>
+                <div className="flex items-center space-x-6 text-sm text-gray-500">
+                  <span className="flex items-center">
+                    <Building className="h-4 w-4 mr-1" />
+                    Led by {deal.lead_investor}
+                  </span>
+                  <span className="flex items-center">
+                    <MapPin className="h-4 w-4 mr-1" />
+                    {deal.location}
+                  </span>
+                  <span className="flex items-center">
+                    <Calendar className="h-4 w-4 mr-1" />
+                    {formatDate(deal.date)}
+                  </span>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-gray-900">{formatCurrency(deal.amount)}</p>
+                <button className="mt-2 flex items-center space-x-1 text-emerald-600 hover:text-emerald-700">
+                  <Eye className="h-4 w-4" />
+                  <span className="text-sm">View Details</span>
+                </button>
+              </div>
+            </div>
+            
+            {/* AI Insights */}
+            <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 border border-purple-200">
+              <h4 className="font-medium text-gray-900 mb-2">🧠 AI Insights</h4>
+              <p className="text-sm text-gray-700">{deal.insights}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/30 to-teal-50/20 relative overflow-hidden">
+      {/* Floating Botanical Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Top left leaf cluster */}
+        <div className="absolute top-10 left-10 opacity-10 animate-pulse">
+          <div className="w-16 h-16 bg-emerald-400 rounded-full transform rotate-45"></div>
+          <div className="w-8 h-8 bg-teal-400 rounded-full transform -rotate-12 -mt-6 ml-4"></div>
+        </div>
+        
+        {/* Top right branch */}
+        <div className="absolute top-20 right-20 opacity-8">
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-16 bg-emerald-300 rounded-full transform rotate-12"></div>
+            <div className="w-4 h-4 bg-sage-400 rounded-full"></div>
+            <div className="w-3 h-3 bg-teal-300 rounded-full"></div>
+          </div>
+        </div>
+        
+        {/* Bottom floating leaves */}
+        <div className="absolute bottom-32 right-1/4 opacity-6 animate-float">
+          <div className="w-12 h-6 bg-emerald-300 rounded-full transform rotate-45"></div>
+        </div>
+        
+        <div className="absolute bottom-20 left-1/3 opacity-8">
+          <div className="w-8 h-4 bg-teal-400 rounded-full transform -rotate-12"></div>
+        </div>
+      </div>
+      {/* Header */}
+      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-sage-200/50 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-sage-600 rounded-xl flex items-center justify-center shadow-sm">
+                  <Globe className="h-5 w-5 text-white" />
+                </div>
+                <h1 className="text-xl font-bold text-slate-800">Climate Intelligence</h1>
+              </div>
+              <span className="text-sm text-sage-600 bg-sage-100 px-3 py-1 rounded-full">BETA</span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-sage-600">Last updated: 2 hours ago</span>
+              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-sm"></div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Navigation */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <nav className="flex space-x-8 mt-6">
+          <button
+            onClick={() => setActiveTab('dashboard')}
+            className={`px-1 py-2 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === 'dashboard'
+                ? 'border-emerald-500 text-emerald-700'
+                : 'border-transparent text-sage-600 hover:text-slate-700 hover:border-sage-300'
+            }`}
+          >
+            Dashboard
+          </button>
+          <button
+            onClick={() => setActiveTab('tracker')}
+            className={`px-1 py-2 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === 'tracker'
+                ? 'border-emerald-500 text-emerald-700'
+                : 'border-transparent text-sage-600 hover:text-slate-700 hover:border-sage-300'
+            }`}
+          >
+            Funding Tracker
+          </button>
+          <button
+            onClick={() => setActiveTab('analytics')}
+            className={`px-1 py-2 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === 'analytics'
+                ? 'border-emerald-500 text-emerald-700'
+                : 'border-transparent text-sage-600 hover:text-slate-700 hover:border-sage-300'
+            }`}
+          >
+            Market Analytics
+          </button>
+        </nav>
+      </div>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+        {activeTab === 'dashboard' && <DashboardView />}
+        {activeTab === 'tracker' && <FundingTrackerView />}
+        {activeTab === 'analytics' && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+            <BarChart3 className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Advanced Analytics Coming Soon</h3>
+            <p className="text-gray-600">Deep market analysis, trend predictions, and comparative insights.</p>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default ClimateFundingTracker;
