@@ -8,6 +8,7 @@ import time
 from scraper import FundingScraper
 from ai_processor import AIProcessor
 from data_manager import DataManager
+from predictive_analytics import PredictiveAnalytics, analyze_market_trends, generate_funding_predictions, identify_investment_gaps, create_predictive_visualizations
 from utils import format_currency, format_date
 import config
 from vc_sample_data import create_focused_vc_sample_data
@@ -648,8 +649,8 @@ def main():
                     help="Number of unique lead investors"
                 )
             
-            # Tabs for different views
-            tab1, tab2, tab3, tab4 = st.tabs(["📊 Analytics", "📋 Deal List", "🤖 AI Insights", "📈 Trends"])
+            # Enhanced tabs with predictive analytics
+            tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Analytics", "📋 Deal List", "🤖 AI Insights", "📈 Trends", "🔮 Predictive Analytics"])
             
             with tab1:
                 # Visualizations
