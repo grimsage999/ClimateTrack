@@ -20,6 +20,7 @@ Preferred communication style: Simple, everyday language.
 - **Focused AI Classification**: The `AIProcessor` uses GPT-4o to extract 5 essential fields (startup_name, subsector, funding_stage, amount_raised, lead_investor) with confidence scoring
 - **Multi-stage Validation**: Articles are classified, data is extracted, and startups are validated against target subsectors using website analysis
 - **Strategic Filtering**: Only Grid Modernization and Carbon Capture deals in Seed/Series A stages are retained
+- **Predictive Analytics**: The `PredictiveAnalytics` engine provides market trend forecasting, funding predictions, and investment gap analysis using ML models and AI insights
 
 ### Data Storage & Management
 - **CSV-based Storage**: Funding data is stored in CSV format for simplicity and portability
@@ -50,6 +51,8 @@ Preferred communication style: Simple, everyday language.
 ### Data Processing Libraries
 - **Pandas**: Data manipulation and CSV file operations
 - **JSON**: Configuration and metadata handling
+- **Scikit-learn**: Machine learning models for predictive analytics and trend forecasting
+- **NumPy**: Numerical computing for statistical analysis and prediction algorithms
 
 ### Visualization Framework
 - **Streamlit**: Web application framework with built-in caching and session management
