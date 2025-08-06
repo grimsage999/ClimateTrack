@@ -1,0 +1,56 @@
+You are refactoring an AI-powered application designed to track early-stage funding rounds (Seed & Series A) in the climate tech space, specifically for VC associates focused on Grid Modernization and Carbon Capture.
+Your goal is to redesign the application architecture around the product’s actual job-to-be-done rather than just generic files like app.py, config.py, or scraper.py.
+
+✅ Objectives:
+1. Organize the codebase by functionality, not file type.
+Create domain-specific folders and modules such as:
+/core
+    funding_event.py         # core data model
+    extractor.py             # LLM-based data extraction logic
+    processor.py             # filtering and formatting logic
+/sources
+    scraper.py               # web scraper logic
+    api_ingestor.py          # API-based data collection
+    source_registry.py       # unified list of known funding sources
+/ui
+    dashboard.py             # Streamlit/FastAPI/Flask frontend
+    filters.py               # logic for sector/stage/date filtering
+/data
+    schema.sql               # database schema (if needed)
+    vc_sample_data.py        # sample mock data
+/tests
+    test_extractor.py
+    test_scraper.py
+config.py
+main.py                     # entry point, wires components together
+**2. Reframe logic into real-world functional boundaries, such as:
+"Ingest new funding events"
+"Extract insights with AI"
+"Display insights in UI"
+"Export data to report"
+Avoid generic naming like "utils.py" or "helper.py" — use action-oriented module names instead.
+3. Clarify responsibilities per module:
+Each module or function should have one clear, high-level purpose aligned with the core user flow:
+Functional Block	Purpose
+/sources/scraper.py	Scrapes raw news or blog articles
+/core/extractor.py	Uses LLM to extract startup, sector, stage, etc.
+/core/processor.py	Filters by relevance (e.g., only Grid Modernization/Seed)
+/ui/dashboard.py	Displays results and supports filters
+/data/vc_sample_data.py	Holds sample/mock data for local testing
+🛠️ Prompt (for yourself or your LLM assistant):
+Refactor the codebase to better reflect the application's end-to-end flow and core purpose, which is:
+“To help a climate VC associate find relevant early-stage deals in specific climate subsectors, fast.”
+Base the application structure on functional responsibilities, not file extensions.
+Eliminate unnecessary boilerplate and make modules clearly understandable from their names.
+
+Ensure the following jobs are clearly represented in the code:
+
+Ingest funding data (scraping, APIs)
+Extract structured insights (LLM)
+Filter to relevant sectors/stages
+Display in UI with basic filters
+(Optional) Export to CSV or report
+Break apart or rename any modules that try to do more than one of these.
+Add comments and docstrings that reflect user-facing purpose, not internal logic only.
+📦 Bonus: Rename app.py → main.py or dashboard.py
+This makes the app easier to understand at a glance. Only use app.py if you're making an installable package.

@@ -17,6 +17,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 import config
+import pandas as pd
 
 class EnhancedFundingClient:
     """

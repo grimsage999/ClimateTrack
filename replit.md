@@ -4,11 +4,35 @@
 
 The Climate Tech Funding Tracker is an AI-powered precision instrument for VC associates tracking Grid Modernization and Carbon Capture funding events. The system combines traditional web scraping with enhanced APITest2 integration for JavaScript-rendered content, uses OpenAI's GPT-4o model for classification and extraction, and presents insights through an immersive botanical-themed dashboard. Following a strategic pivot, the application now focuses exclusively on Seed and Series A deals in two target subsectors.
 
+**Recent Architectural Refactoring (August 2025)**: The codebase has been restructured around functional domain boundaries rather than file types, creating clear job-to-be-done modules that align with VC workflow needs. The main entry point is now `main.py` instead of `app.py`, reflecting the streamlined architecture.
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
 
 ## System Architecture
+
+### Refactored Architecture (Job-to-be-Done Structure)
+The application has been refactored from generic file types to functional domain boundaries aligned with VC workflow needs:
+
+**Core Domain (`/core/`)**
+- `funding_event.py`: Core data model and validation for VC deals
+- `extractor.py`: LLM-powered data extraction from raw news content  
+- `processor.py`: Business logic for filtering and processing VC deal data
+- `predictive_analytics.py`: Market forecasting and investment gap analysis
+
+**Data Sources (`/sources/`)**
+- `scraper.py`: Web scraping logic for funding news discovery
+- `api_client.py`: Enhanced API client with JavaScript rendering support
+- `source_registry.py`: Centralized configuration of funding data sources
+
+**User Interface (`/ui/`)**
+- `dashboard.py`: Main VC deal flow dashboard with botanical design
+- `filters.py`: Interactive filtering controls for sector, stage, and amount ranges
+
+**Data Management (`/data/`)**
+- `data_manager.py`: CSV-based storage and deduplication logic
+- `vc_sample_data.py`: Focused sample data for VC workflow testing
 
 ### Frontend Architecture
 - **Streamlit Web Framework**: The primary user interface is built using Streamlit, providing an interactive dashboard with real-time data visualization
