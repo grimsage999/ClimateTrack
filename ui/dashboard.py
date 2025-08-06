@@ -128,10 +128,10 @@ class VCDashboard:
             col1, col2 = st.columns(2)
             
             with col1:
-                refresh_clicked = st.button("🔄 Enhanced Scan", type="primary")
+                refresh_clicked = st.button("🔄 Enhanced Scan", type="primary", key="dash_refresh")
             
             with col2:
-                export_clicked = st.button("📊 Export Report")
+                export_clicked = st.button("📊 Export Report", key="dash_export")
             
             st.divider()
             
@@ -142,10 +142,10 @@ class VCDashboard:
             # Quick actions
             st.subheader("⚡ Quick Actions")
             
-            if st.button("📋 Load VC Sample Data"):
+            if st.button("📋 Load VC Sample Data", key="dash_sample"):
                 st.session_state['load_sample'] = True
             
-            if st.button("🤖 Generate AI Insights"):
+            if st.button("🤖 Generate AI Insights", key="dash_insights"):
                 st.session_state['generate_insights'] = True
             
             # Status indicators
@@ -362,13 +362,14 @@ class VCDashboard:
                 )
                 
                 # Export functionality
-                if st.button("📥 Export Deal List"):
+                if st.button("📥 Export Deal List", key="export_deals"):
                     csv = df.to_csv(index=False)
                     st.download_button(
                         label="Download CSV",
                         data=csv,
                         file_name=f"vc_deals_{datetime.now().strftime('%Y%m%d')}.csv",
-                        mime="text/csv"
+                        mime="text/csv",
+                        key="download_csv"
                     )
             else:
                 st.info("No deal data available to display")
@@ -575,6 +576,6 @@ class VCDashboard:
         col1, col2, col3 = st.columns(3)
         
         with col2:
-            if st.button("📋 Load Sample VC Deals", type="primary"):
+            if st.button("📋 Load Sample VC Deals", type="primary", key="empty_load_sample"):
                 st.session_state['load_sample'] = True
                 st.rerun()
