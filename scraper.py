@@ -6,6 +6,7 @@ import time
 import random
 from typing import List, Dict, Optional
 import config
+from api_client import EnhancedFundingClient, get_funding_data
 
 class FundingScraper:
     """Scraper for climate tech funding data from public sources"""
@@ -15,6 +16,8 @@ class FundingScraper:
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         })
+        # Initialize enhanced API client from APITest2 integration
+        self.enhanced_client = EnhancedFundingClient()
         
     def scrape_techcrunch(self) -> List[Dict]:
         """Scrape funding news from TechCrunch"""

@@ -459,35 +459,35 @@ def main():
     with st.sidebar:
         st.header("Controls")
         
-        # Data refresh section
-        st.subheader("🌱 Data Management")
+        # Enhanced data collection with APITest2 integration
+        st.subheader("⚡ Enhanced Deal Collection")
         
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("🔄 Refresh Data", type="primary"):
-                with st.spinner("Scraping latest funding data..."):
+            if st.button("🔄 Enhanced Scan", type="primary"):
+                with st.spinner("Scanning with enhanced APITest2 integration..."):
                     try:
-                        # Scrape new data
+                        # Use enhanced scraper with APITest2 functionality
                         raw_data = scraper.scrape_all_sources()
                         if raw_data:
-                            # Process with AI
+                            # Process with focused AI
                             processed_data = []
                             for item in raw_data:
                                 processed_item = ai_processor.process_funding_event(item)
-                                if processed_item and processed_item.get('is_climate_tech', False):
+                                if processed_item and processed_item.get('is_target_deal', False):
                                     processed_data.append(processed_item)
                             
                             # Save to storage
                             if processed_data:
                                 data_manager.save_funding_data(processed_data)
-                                st.success(f"✅ Added {len(processed_data)} new climate tech funding events")
+                                st.success(f"✅ Found {len(processed_data)} new Grid Modernization & Carbon Capture deals")
                                 st.rerun()
                             else:
-                                st.warning("No new climate tech funding events found")
+                                st.warning("No new target deals found in current scan")
                         else:
-                            st.warning("No new data found from sources")
+                            st.warning("No new data found from enhanced sources")
                     except Exception as e:
-                        st.error(f"Error refreshing data: {str(e)}")
+                        st.error(f"Enhanced scan error: {str(e)}")
         
         with col2:
             if st.button("📊 Load VC Deals"):
