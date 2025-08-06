@@ -6,7 +6,7 @@ import time
 import random
 from typing import List, Dict, Optional
 import config
-from api_client import EnhancedFundingClient, get_funding_data
+from sources.api_client import EnhancedFundingClient, get_funding_data
 
 class FundingScraper:
     """Scraper for climate tech funding data from public sources"""
