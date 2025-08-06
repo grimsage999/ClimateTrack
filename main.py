@@ -88,17 +88,17 @@ def load_existing_data(data_manager) -> FundingEventCollection:
     
     try:
         # Load raw data
-        raw_data = data_manager.load_funding_data()
+        df = data_manager.load_funding_data()
         
-        if not raw_data:
+        if df.empty:
             return FundingEventCollection([])
         
         # Convert to FundingEvent objects
         events = []
-        for item in raw_data:
+        for _, row in df.iterrows():
             try:
                 from core.funding_event import FundingEvent
-                event = FundingEvent.from_dict(item)
+                event = FundingEvent.from_dict(row.to_dict())
                 if event.is_valid_vc_deal():
                     events.append(event)
             except Exception as e:
@@ -125,8 +125,7 @@ def handle_user_actions(components) -> FundingEventCollection:
             sample_events = create_focused_vc_sample_data()
             
             # Save sample data
-            for event_data in sample_events:
-                data_manager.add_funding_event(event_data)
+            data_manager.save_funding_data(sample_events)
             
             st.success("✅ Loaded 10 focused VC deals")
             
@@ -172,11 +171,11 @@ def main():
     dashboard.render(events)
     
     # Handle sidebar actions
-    if st.sidebar.button("🔄 Enhanced Scan"):
+    if st.sidebar.button("🔄 Enhanced Scan", key="sidebar_refresh"):
         st.session_state['refresh_data'] = True
         st.rerun()
     
-    if st.sidebar.button("📋 Load VC Sample Data"):
+    if st.sidebar.button("📋 Load VC Sample Data", key="sidebar_sample"):
         st.session_state['load_sample'] = True
         st.rerun()
     

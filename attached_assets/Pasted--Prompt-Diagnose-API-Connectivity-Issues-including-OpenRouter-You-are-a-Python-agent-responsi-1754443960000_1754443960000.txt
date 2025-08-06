@@ -1,0 +1,61 @@
+🛠️ Prompt: Diagnose API Connectivity Issues (including OpenRouter)
+
+You are a Python agent responsible for testing API connectivity in a local or cloud-hosted environment (e.g., Replit, localhost, or deployed server).
+Your goal is to determine whether you can successfully:
+1. Reach an API endpoint (e.g., OpenRouter, OpenAI, custom FastAPI)
+2. Authenticate using the expected headers or keys
+3. Receive a valid response or identify the type of failure (network, auth, CORS, rate-limit, etc.)
+Given:
+* API Base URL: https://openrouter.ai/api/v1/chat/completions (or substitute any)
+* Method: POST
+* Headers: python CopyEdit   {
+*     "Authorization": "Bearer <YOUR_API_KEY>",
+*     "Content-Type": "application/json"
+* }
+*   
+* Body (JSON): json CopyEdit   {
+*   "model": "openai/gpt-3.5-turbo",
+*   "messages": [{"role": "user", "content": "Hello"}]
+* }
+*   
+
+✅ Use This Python Script to Test API Connectivity:
+python
+CopyEdit
+import requests
+import json
+
+def test_api_connectivity():
+    url = "https://openrouter.ai/api/v1/chat/completions"  # Replace if needed
+    headers = {
+        "Authorization": "Bearer YOUR_API_KEY_HERE",  # Replace with real key
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": "openai/gpt-3.5-turbo",
+        "messages": [{"role": "user", "content": "Hello from API test."}]
+    }
+
+    try:
+        response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=10)
+        response.raise_for_status()  # Will throw error if not 200-level
+        print("✅ API is reachable.")
+        print("🔁 Status Code:", response.status_code)
+        print("📦 Response:", response.json())
+    except requests.exceptions.HTTPError as errh:
+        print("❌ HTTP Error:", errh)
+    except requests.exceptions.ConnectionError as errc:
+        print("❌ Connection Error: Check internet or base URL -", errc)
+    except requests.exceptions.Timeout as errt:
+        print("❌ Timeout Error: API may be down or slow -", errt)
+    except requests.exceptions.RequestException as err:
+        print("❌ General Error:", err)
+
+# Run the test
+test_api_connectivity()
+
+🧪 Use Cases
+* ✅ Diagnose "Failed to fetch" or CORS errors
+* ✅ Confirm if API keys are expired or incorrect
+* ✅ Test if OpenRouter (or similar gateway services) are reachable from Replit
+* ✅ Quickly identify if the error is network, auth, or endpoint-related
