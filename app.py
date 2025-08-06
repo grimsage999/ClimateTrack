@@ -10,7 +10,7 @@ from ai_processor import AIProcessor
 from data_manager import DataManager
 from utils import format_currency, format_date
 import config
-from sample_data import load_sample_data_to_manager
+from vc_sample_data import create_focused_vc_sample_data
 
 # Configure page
 st.set_page_config(
@@ -442,15 +442,15 @@ def main():
     <div class="floating-element">🌿</div>
     """, unsafe_allow_html=True)
     
-    # Enhanced header with botanical styling
-    st.markdown('<h1 class="botanical-header">🌱 Climate Tech Funding Tracker</h1>', unsafe_allow_html=True)
+    # Enhanced header with focused VC positioning
+    st.markdown('<h1 class="botanical-header">⚡ VC Deal Flow Tracker</h1>', unsafe_allow_html=True)
     st.markdown("""
     <div class="glass-container">
         <p style="margin: 0; font-style: italic; color: var(--sage-green); font-size: 1.1rem;">
-            AI-powered real-time analysis of climate technology investments
+            Precision intelligence for climate tech investors
         </p>
         <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: var(--soft-gray);">
-            Sustainable funding intelligence for a regenerative future 🌍
+            Grid Modernization & Carbon Capture • Seed & Series A • Weekly Deal Reports
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -490,14 +490,15 @@ def main():
                         st.error(f"Error refreshing data: {str(e)}")
         
         with col2:
-            if st.button("📊 Load Sample Data"):
-                with st.spinner("Loading demonstration data..."):
+            if st.button("📊 Load VC Deals"):
+                with st.spinner("Loading focused VC deal data..."):
                     try:
-                        count = load_sample_data_to_manager(data_manager)
-                        st.success(f"✅ Loaded {count} sample climate tech funding events")
+                        sample_data = create_focused_vc_sample_data()
+                        data_manager.save_funding_data(sample_data)
+                        st.success(f"✅ Loaded {len(sample_data)} Grid Modernization & Carbon Capture deals")
                         st.rerun()
                     except Exception as e:
-                        st.error(f"Error loading sample data: {str(e)}")
+                        st.error(f"Error loading VC deal data: {str(e)}")
         
         # Auto-refresh toggle
         auto_refresh = st.toggle("Auto-refresh (30 min)", value=False)
@@ -514,7 +515,7 @@ def main():
         df = data_manager.load_funding_data()
         
         if df.empty:
-            st.info("📊 No data available. Click 'Refresh Data' to start collecting funding information.")
+            st.info("📊 No deal data available. Click 'Load VC Deals' to see Grid Modernization & Carbon Capture funding events.")
             return
         
         # Apply filters in sidebar
@@ -534,17 +535,17 @@ def main():
                     df = df[(df['date'].dt.date >= date_range[0]) & 
                            (df['date'].dt.date <= date_range[1])]
             
-            # Sector filter
+            # Target Subsector filter (focused VC use case)
             if 'sector' in df.columns:
                 sectors = ['All'] + sorted(df['sector'].dropna().unique().tolist())
-                selected_sector = st.selectbox("Sector", sectors)
+                selected_sector = st.selectbox("Target Subsector", sectors, help="Grid Modernization & Carbon Capture only")
                 if selected_sector != 'All':
                     df = df[df['sector'] == selected_sector]
             
-            # Stage filter
+            # Funding Stage filter (focused on Seed & Series A)
             if 'stage' in df.columns:
                 stages = ['All'] + sorted(df['stage'].dropna().unique().tolist())
-                selected_stage = st.selectbox("Funding Stage", stages)
+                selected_stage = st.selectbox("Funding Stage", stages, help="Focused on Seed & Series A rounds")
                 if selected_stage != 'All':
                     df = df[df['stage'] == selected_stage]
             
@@ -600,14 +601,14 @@ def main():
         
         # Enhanced main dashboard with immersive design
         if not df.empty:
-            # Beautiful section header
+            # Beautiful section header for VC use case
             st.markdown("""
             <div class="glass-container" style="text-align: center; margin: 2rem 0;">
                 <h2 style="color: var(--forest-green); margin-bottom: 0.5rem; font-family: 'Crimson Text', serif;">
-                    🌍 Market Intelligence Dashboard
+                    ⚡ Weekly Deal Report
                 </h2>
                 <p style="color: var(--sage-green); margin: 0;">
-                    Real-time insights from the climate tech ecosystem
+                    Grid Modernization & Carbon Capture • Seed & Series A
                 </p>
             </div>
             """, unsafe_allow_html=True)
@@ -618,23 +619,23 @@ def main():
             with col1:
                 total_funding = df['amount'].sum() if 'amount' in df.columns else 0
                 st.metric(
-                    "🌱 Total Funding",
+                    "💰 Total Deal Volume",
                     format_currency(total_funding),
-                    help="Total funding flowing into climate innovation"
+                    help="Combined funding in filtered deals"
                 )
             
             with col2:
                 deal_count = len(df)
                 st.metric(
-                    "🤝 Active Deals",
+                    "📊 Deal Count", 
                     deal_count,
-                    help="Investment rounds accelerating climate solutions"
+                    help="Number of qualifying deals in timeframe"
                 )
             
             with col3:
                 avg_deal = total_funding / deal_count if deal_count > 0 else 0
                 st.metric(
-                    "💰 Avg Deal Size",
+                    "📈 Avg Round Size",
                     format_currency(avg_deal),
                     help="Average funding amount per deal"
                 )

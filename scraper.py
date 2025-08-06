@@ -22,12 +22,14 @@ class FundingScraper:
         
         try:
             # Search for climate tech funding articles
+            # FOCUSED SEARCH: Target specific subsectors only
             search_terms = [
-                "climate tech funding",
-                "clean energy investment",
-                "sustainability startup funding",
+                "grid modernization funding",
+                "smart grid investment", 
+                "transmission funding",
                 "carbon capture funding",
-                "renewable energy investment"
+                "direct air capture investment",
+                "carbon storage funding"
             ]
             
             for term in search_terms:
