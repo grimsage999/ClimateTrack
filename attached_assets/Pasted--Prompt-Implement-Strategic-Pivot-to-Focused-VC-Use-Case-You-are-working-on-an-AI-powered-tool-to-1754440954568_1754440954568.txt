@@ -1,0 +1,64 @@
+🔧 Prompt: Implement Strategic Pivot to Focused VC Use Case
+You are working on an AI-powered tool to track climate tech startup funding events. This tool was previously too broad in scope. Based on critical feedback, you're now refining the application to focus on a single, high-impact user:
+An Associate at a climate-focused VC firm responsible for tracking weekly seed and Series A deal flow in specific climate sub-sectors.
+This user is especially interested in two sectors:
+Grid Modernization
+Carbon Capture
+They need a weekly update of new deals in those sectors and want to know who is leading each round, especially to track competitor activity.
+🧭 Implementation Steps
+✅ Step 1: Refactor LLM Prompt (for classification + enrichment)
+Update the LLM prompt used in your data labeling/analysis pipeline. Instruct it to focus only on extracting the following five essential data points from scraped funding event text:
+1. startup_name
+2. subsector (must match target sectors: Grid Modernization or Carbon Capture)
+3. funding_stage (only Seed or Series A — discard others)
+4. amount_raised
+5. lead_investor (highest priority)
+✅ Add instructions to ignore funding events outside of these subsectors or stages.
+✅ Ask the LLM to assign confidence scores to each field extracted.
+
+✅ Step 2: Update the Scraper Logic
+Modify your scraping logic to:
+Filter or tag articles/posts that mention “grid,” “transmission,” “carbon capture,” “carbon storage,” etc.
+Prioritize sources that frequently publish funding news (e.g. TechCrunch, Climate Tech VC, PitchBook blog, etc.)
+Store metadata such as:
+Source URL
+Date of publication
+Raw text blob (used for LLM processing)
+✅ Step 3: Update Your Database Schema
+Ensure your database schema or structured dataset supports:
+Field	Description
+startup_name	Name of funded startup
+subsector	Categorized climate sub-sector
+funding_stage	Seed or Series A
+amount_raised	USD amount
+lead_investor	Name of lead investor
+confidence_score	LLM-generated rating for each field
+source_url	Original link
+published_date	Date the funding event was announced
+✅ Step 4: UI Integration – Align Front-End to Core User Flow
+Revise the UI to support this new core user action:
+“Find all new Seed or Series A funding rounds in Grid Modernization and Carbon Capture from the last 7–14 days, with clear info on who led the round.”
+🔲 Add filters:
+Sector filter: Grid Modernization / Carbon Capture
+Date range: Past 7, 14, or 30 days
+Funding stage: Seed / Series A
+Optional: Filter by known competitor firms (based on lead investor)
+✅ Make the lead investor field visually prominent.
+✅ Add export-to-CSV and "Add to Weekly Report" options for users.
+
+✅ Step 5: Concrete Next Sprint Goals
+Sprint Goal	Details
+Fix chrome/chromedriver issue	This unblocks the scraping pipeline. First priority.
+Update LLM prompt for 5 essential fields	Refine data labeling accuracy.
+Integrate confidence scores	Allow filtering by reliability.
+Redesign UI to match new use case	Filterable, focused, minimal.
+Load sample dataset of 25 events	Use static input if scraping is delayed.
+🧠 Use this Sample LLM Instruction Prompt:
+You are an expert data extraction agent focused on climate tech funding events. From the text below, extract only the following fields: startup_name, subsector (must match Grid Modernization or Carbon Capture), funding_stage (only Seed or Series A), amount_raised, and lead_investor. Ignore events that do not match this criteria. Include a 0-1 confidence score for each extracted field. Format as JSON.
+✅ Summary
+You are no longer building a broad tool. You are building a precision instrument for a specific climate VC associate. Every system component — from LLM prompts to UI filters — must support their one core task.
+🎯 Focus user: Climate VC associate doing weekly deal reports
+🔍 Core job: Find recent Seed/A deals in grid & carbon capture
+📊 Critical data: 5 fields (startup, subsector, stage, amount, lead)
+🧠 Smart AI: Confidence-rated, purpose-driven extraction
+🛠️ UI design: Minimal, filterable, exportable insights

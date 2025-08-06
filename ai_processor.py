@@ -15,11 +15,18 @@ class AIProcessor:
         self.model = "gpt-4o"
         
     def process_funding_event(self, raw_data: Dict) -> Optional[Dict]:
-        """Process and classify a single funding event"""
+        """Process and classify funding events for focused VC deal flow tracking"""
         try:
             prompt = f"""
-            Analyze the following funding information and determine if it's related to climate technology.
-            Extract and structure the data according to the JSON format below.
+            You are an expert data extraction agent focused on climate tech funding events for VC deal flow tracking.
+            
+            CRITICAL FOCUS: Only extract deals that match ALL criteria:
+            1. Subsector: Must be exactly "Grid Modernization" OR "Carbon Capture" 
+            2. Funding Stage: Must be exactly "Seed" OR "Series A"
+            3. Must have clear funding information
+            
+            Grid Modernization includes: grid infrastructure, transmission, distribution, smart grid, energy storage integration, grid analytics, demand response
+            Carbon Capture includes: direct air capture, carbon capture and storage (CCS), carbon utilization, carbon removal technologies
             
             Raw funding data:
             Company: {raw_data.get('company', 'Unknown')}
@@ -28,25 +35,36 @@ class AIProcessor:
             Investor: {raw_data.get('lead_investor', 'Unknown')}
             Description: {raw_data.get('description', 'Unknown')}
             
-            Climate technology includes: renewable energy, energy storage, carbon capture, 
-            sustainable transport, green building, clean water, agriculture tech, 
-            climate adaptation, and related environmental technologies.
+            Extract ONLY these 5 essential fields:
+            1. startup_name: Company receiving funding
+            2. subsector: "Grid Modernization" or "Carbon Capture" (exact match required)
+            3. funding_stage: "Seed" or "Series A" (exact match required)
+            4. amount_raised: USD amount in millions
+            5. lead_investor: Primary/lead investor (HIGHEST PRIORITY - VC firms track competitors)
+            
+            IGNORE any funding events outside Grid Modernization or Carbon Capture.
+            IGNORE any funding stages other than Seed or Series A.
             
             Respond with JSON in this exact format:
             {{
-                "is_climate_tech": boolean,
-                "company": "cleaned company name",
-                "sector": "specific climate tech sector or null",
-                "stage": "standardized funding stage",
-                "amount": number or null,
-                "lead_investor": "lead investor name or null",
-                "location": "company location or null",
-                "region": "geographic region (North America, Europe, Asia Pacific, etc.)",
+                "is_target_deal": boolean,
+                "startup_name": "string or null",
+                "subsector": "Grid Modernization" or "Carbon Capture" or null,
+                "funding_stage": "Seed" or "Series A" or null,
+                "amount_raised": number in millions USD or null,
+                "lead_investor": "string or null",
+                "region": "geographic region or null", 
                 "date": "funding date in YYYY-MM-DD format or null",
-                "description": "cleaned description",
-                "confidence_score": number between 0 and 1,
-                "climate_tech_keywords": ["list", "of", "relevant", "keywords"]
+                "confidence_scores": {{
+                    "startup_name": number (0-1),
+                    "subsector": number (0-1), 
+                    "funding_stage": number (0-1),
+                    "amount_raised": number (0-1),
+                    "lead_investor": number (0-1)
+                }}
             }}
+            
+            If no qualifying deal found, return {{"is_target_deal": false}}.
             """
             
             response = self.client.chat.completions.create(

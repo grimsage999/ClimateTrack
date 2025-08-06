@@ -11,28 +11,39 @@ DATA_SOURCES = [
     "CleanTech.com"
 ]
 
-# Climate tech sectors
-CLIMATE_SECTORS = [
-    "Solar Energy",
-    "Wind Energy", 
-    "Energy Storage",
-    "Carbon Capture & Storage",
-    "Sustainable Transport & Mobility",
-    "Agriculture Technology",
-    "Green Building & Materials",
-    "Clean Water & Treatment",
-    "Circular Economy & Waste",
-    "Climate Adaptation",
-    "Other Climate Tech"
+# FOCUSED VC USE CASE: Target climate tech subsectors only
+TARGET_SUBSECTORS = [
+    "Grid Modernization",
+    "Carbon Capture"
 ]
 
-# Funding stages
-FUNDING_STAGES = [
-    "Pre-Seed",
+# Grid Modernization keywords for scraping
+GRID_KEYWORDS = [
+    "grid infrastructure", "transmission", "distribution", "smart grid", 
+    "energy storage integration", "grid analytics", "demand response",
+    "grid modernization", "power grid", "electrical grid"
+]
+
+# Carbon Capture keywords for scraping  
+CARBON_KEYWORDS = [
+    "direct air capture", "carbon capture and storage", "CCS", 
+    "carbon utilization", "carbon removal", "DAC", "carbon capture",
+    "carbon storage", "CO2 capture"
+]
+
+# FOCUSED VC USE CASE: Target funding stages only
+TARGET_FUNDING_STAGES = [
     "Seed",
+    "Series A"
+]
+
+# All funding stages for reference
+ALL_FUNDING_STAGES = [
+    "Pre-Seed",
+    "Seed", 
     "Series A",
-    "Series B", 
-    "Series C",
+    "Series B",
+    "Series C", 
     "Series D+",
     "Growth",
     "Unknown"
