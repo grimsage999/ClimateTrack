@@ -436,12 +436,11 @@ class VCDashboard:
             
             if not df.empty:
                 # Monthly trends
-                df['month'] = df['date'].dt.to_period('M')
+                df['month'] = df['date'].dt.to_period('M').astype(str)
                 monthly_data = df.groupby('month').agg({
                     'amount': ['sum', 'count', 'mean']
                 }).reset_index()
                 monthly_data.columns = ['month', 'total_funding', 'deal_count', 'avg_deal_size']
-                monthly_data['month'] = monthly_data['month'].astype(str)
                 
                 col1, col2 = st.columns(2)
                 
@@ -479,6 +478,8 @@ class VCDashboard:
                 if 'sector' in df.columns:
                     st.subheader("Sector Performance Over Time")
                     sector_trends = df.groupby(['month', 'sector'])['amount'].sum().reset_index()
+                    # Ensure month column is string for JSON serialization
+                    sector_trends['month'] = sector_trends['month'].astype(str)
                     fig = px.line(
                         sector_trends,
                         x='month',
