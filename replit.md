@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Climate Tech Funding Tracker is an AI-powered web application that monitors, analyzes, and visualizes climate technology investments in real-time. The system automatically scrapes funding data from multiple sources, uses OpenAI's GPT-4o model to classify and extract relevant information, and presents insights through an interactive Streamlit dashboard. The application focuses specifically on climate technology sectors including renewable energy, carbon capture, sustainable transport, and other environmental technologies.
+The Climate Tech Funding Tracker is an AI-powered precision instrument for VC associates tracking Grid Modernization and Carbon Capture funding events. The system combines traditional web scraping with enhanced APITest2 integration for JavaScript-rendered content, uses OpenAI's GPT-4o model for classification and extraction, and presents insights through an immersive botanical-themed dashboard. Following a strategic pivot, the application now focuses exclusively on Seed and Series A deals in two target subsectors.
 
 ## User Preferences
 
@@ -15,10 +15,11 @@ Preferred communication style: Simple, everyday language.
 - **Plotly Integration**: Charts and graphs are rendered using Plotly Express and Graph Objects for interactive data visualization
 - **Component-based Structure**: The UI is organized into modular components with cached resource initialization for performance
 
-### Data Processing Pipeline
-- **Multi-source Scraping**: The `FundingScraper` class collects funding data from multiple sources (TechCrunch, VentureBeat, Crunchbase News, Green Tech Media, CleanTech.com)
-- **AI-powered Classification**: The `AIProcessor` leverages OpenAI's GPT-4o model to analyze raw funding data, determine climate tech relevance, and extract structured information
-- **Data Validation**: Processed data includes confidence scores and keyword extraction to ensure quality and relevance
+### Data Processing Pipeline  
+- **Enhanced Scraping**: The `FundingScraper` integrates APITest2 functionality with Selenium for JavaScript-rendered content and AI-powered article classification
+- **Focused AI Classification**: The `AIProcessor` uses GPT-4o to extract 5 essential fields (startup_name, subsector, funding_stage, amount_raised, lead_investor) with confidence scoring
+- **Multi-stage Validation**: Articles are classified, data is extracted, and startups are validated against target subsectors using website analysis
+- **Strategic Filtering**: Only Grid Modernization and Carbon Capture deals in Seed/Series A stages are retained
 
 ### Data Storage & Management
 - **CSV-based Storage**: Funding data is stored in CSV format for simplicity and portability
@@ -40,8 +41,10 @@ Preferred communication style: Simple, everyday language.
 - **API Key Management**: Requires OPENAI_API_KEY environment variable
 
 ### Web Scraping Infrastructure
-- **Requests Library**: HTTP client for web scraping operations
-- **Trafilatura**: Content extraction from web pages with text processing capabilities
+- **Enhanced API Client**: Integrated APITest2 functionality (https://github.com/PeteM573/APITest2) for advanced scraping
+- **Selenium WebDriver**: JavaScript-rendered content handling with Chrome headless mode
+- **Trafilatura**: Content extraction from web pages with text processing capabilities  
+- **BeautifulSoup4**: HTML parsing and data extraction
 - **Rate Limiting**: Built-in delays and randomization to respect website policies
 
 ### Data Processing Libraries

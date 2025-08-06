@@ -1,0 +1,34 @@
+✅ Prompt: Integrate APITest2 GitHub Repo into Climate Tech Tracker
+Objective:
+Integrate relevant functionality from the https://github.com/PeteM573/APITest2 repo into your existing AI-powered Climate Tech Funding Tracker, either as:
+a reference implementation,
+a callable module, or
+an embedded microservice for testing or enrichment.
+🔧 Prompt (for self or LLM):
+Integrate functionality from the APITest2 GitHub repository (https://github.com/PeteM573/APITest2) into the Climate Tech Funding Tracker project. Review the repo to determine which of the following components can be reused or adapted:
+API client logic
+Authentication mechanisms (if any)
+Data formatting or response parsing logic
+Testing structure (e.g., unittest, pytest examples)
+Adapt the logic to:
+Work within the existing project’s structure (e.g., app.py, ai_processor.py)
+Support our goal: retrieving and formatting structured data (startup name, subsector, funding stage, amount raised, lead investor)
+Stay within the current stack: Python, FastAPI/Flask, OpenAI integration, etc.
+Plan of Action:
+Clone the APITest2 repo locally or into a subdirectory like /libs/apitest2
+Inspect the codebase: extract any reusable classes, functions, or API-handling logic
+Create a wrapper or adapter if needed to plug into your scraper.py or ai_processor.py
+Test with mocked API data if the APITest2 API is not live
+Document how this integration supports the core user action: "finding Seed/Series A deals in Grid Modernization and Carbon Capture"
+Constraints:
+Maintain modularity; do not tightly couple the external logic to your core pipeline unless needed
+Include attribution in comments if you're directly using code from the repo
+Avoid using deprecated or hard-coded API tokens
+🧠 Suggested LLM Prompt for Code Extraction (if using ChatGPT):
+Review the code in this repo: https://github.com/PeteM573/APITest2
+Extract only the reusable API calling logic (GET/POST requests, parsing, and response structure).
+Refactor it as a helper module named api_client.py that I can drop into my climate funding tracker project.
+It should be callable like:
+from api_client import get_funding_data
+data = get_funding_data(sector="Carbon Capture", stage="Seed")
+Format responses as a list of dicts with keys: startup_name, subsector, funding_stage, amount_raised, lead_investor.
