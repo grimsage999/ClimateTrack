@@ -5,6 +5,7 @@ Converts raw news articles into structured VC deal data
 
 import json
 import os
+import config
 from typing import Dict, Optional, List
 from openai import OpenAI
 from core.funding_event import FundingEvent, FundingEventValidator
@@ -18,12 +19,14 @@ class FundingDataExtractor:
     def __init__(self):
         # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
         # do not change this unless explicitly requested by the user
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        self.model = "gpt-4o"
-        
-        # VC-focused extraction targets
-        self.target_subsectors = ["Grid Modernization", "Carbon Capture"]
-        self.target_stages = ["Seed", "Series A"]
+        self.model = "gpt-4o" # Keep the model here
+        # --- NEW: Use config for client setup ---
+        self.client = OpenAI(
+            api_key=config.OPENAI_API_KEY,
+            base_url=config.OPENROUTER_BASE_URL,
+            default_headers=config.OPENROUTER_DEFAULT_HEADERS,
+        )
+        # --- END NEW ---
     
     def extract_funding_event(self, raw_content: Dict) -> Optional[FundingEvent]:
         """
@@ -210,8 +213,13 @@ class ArticleClassifier:
     def __init__(self):
         # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
         # do not change this unless explicitly requested by the user
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        self.model = "gpt-4o"
+        self.model = "gpt-4o" # Keep the model here
+        # --- NEW: Use config for client setup ---
+        self.client = OpenAI(
+            api_key=config.OPENAI_API_KEY,
+            base_url=config.OPENROUTER_BASE_URL,
+            default_headers=config.OPENROUTER_DEFAULT_HEADERS,
+        )
     
     def classify_article(self, title: str, content: str) -> str:
         """

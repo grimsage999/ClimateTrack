@@ -1,3 +1,5 @@
+# config.py
+
 """Configuration settings for the Climate Tech Funding Tracker"""
 
 import os
@@ -60,7 +62,15 @@ REGIONS = [
 ]
 
 # API Configuration
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") # This variable holds your OpenRouter key
+
+# --- NEW: OpenRouter Specific Configuration ---
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+OPENROUTER_DEFAULT_HEADERS = {
+    "HTTP-Referer": "https://github.com/your-repo", # Optional: Update to your actual GitHub repo URL
+    "X-Title": "Climate Tech Funding Tracker",
+}
+# --- END NEW ---
 
 # Scraping configuration
 SCRAPE_DELAY_MIN = 1  # Minimum delay between requests (seconds)
