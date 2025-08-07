@@ -7,7 +7,7 @@ import streamlit as st
 from datetime import datetime, timedelta
 from typing import Dict, Tuple, Optional
 from core.funding_event import FundingEventCollection
-
+import pandas as pd 
 class DealFilters:
     """
     Interactive filter controls for VC deal analysis
@@ -126,20 +126,23 @@ class DealFilters:
         )
         
         return amount_range
-    
+# In ui/filters.py
+
     def _render_investor_filter(self, events: FundingEventCollection) -> Optional[str]:
         """Render lead investor filter"""
         if events.get_deal_count() == 0:
             return None
         
-        # Get unique investors
         investors = events.get_unique_investors()
         
         if not investors:
             return None
         
-        # Sort investors by name
-        investors = sorted(investors)
+        # --- THIS IS THE FIX ---
+        # Convert all items to strings to prevent sorting errors with mixed types (str and float/NaN)
+        investors = sorted([str(i) for i in investors if pd.notna(i)])
+        # --- END FIX ---
+
         investor_options = ["All"] + investors
         
         selected_investor = st.selectbox(

@@ -121,19 +121,16 @@ class VCDashboard:
     def _render_sidebar(self, events: FundingEventCollection) -> dict:
         """Render sidebar with filters and controls"""
         with st.sidebar:
-            st.header("Deal Flow Controls")
-            
-            # Data collection section
-            st.subheader("⚡ Enhanced Deal Collection")
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                refresh_clicked = st.button("🔄 Enhanced Scan", type="primary", key="dash_refresh")
-            
-            with col2:
-                export_clicked = st.button("📊 Export Report", key="dash_export")
-            
-            st.divider()
+            # --- THIS SECTION IS REMOVED ---
+            # st.header("Deal Flow Controls")
+            # st.subheader("⚡ Enhanced Deal Collection")
+            # col1, col2 = st.columns(2)
+            # with col1:
+            #     refresh_clicked = st.button("🔄 Enhanced Scan", type="primary", key="dash_refresh")
+            # with col2:
+            #     export_clicked = st.button("📊 Export Report", key="dash_export")
+            # st.divider()
+            # --- END OF REMOVED SECTION ---
             
             # Filters
             st.subheader("🎯 Deal Filters")
@@ -141,10 +138,6 @@ class VCDashboard:
             
             # Quick actions
             st.subheader("⚡ Quick Actions")
-            
-            if st.button("📋 Load VC Sample Data", key="dash_sample"):
-                st.session_state['load_sample'] = True
-            
             if st.button("🤖 Generate AI Insights", key="dash_insights"):
                 st.session_state['generate_insights'] = True
             
