@@ -1,13 +1,14 @@
 {
   "last_updated": "2025-08-07T00:50:06.118566",
-  "total_events": 20,
-  "new_events_added": 10,
+  "total_events": 33,
+  "new_events_added": 25,
   "data_sources": [
     "TechCrunch",
     "VentureBeat",
     "Crunchbase News",
     "Green Tech Media",
-    "CleanTech.com"
+    "CleanTech.com",
+    "CTVC"
   ],
-  "version": "1.0"
+  "version": "1.1"
 }
