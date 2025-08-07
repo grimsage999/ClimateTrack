@@ -26,9 +26,12 @@ class PredictiveAnalytics:
     def __init__(self):
         # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
         # do not change this unless explicitly requested by the user
-        self.model = "gpt-4o" # Keep the model here
-        # Direct OpenAI API setup
-        self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+        self.model = "openai/gpt-4o"  # OpenRouter format for model
+        # OpenRouter API setup using OPENAI2 secret
+        self.client = OpenAI(
+            api_key=os.environ.get("OPENAI2"),
+            base_url="https://openrouter.ai/api/v1"
+        )
         
         # VC-focused analysis parameters
         self.target_sectors = config.TARGET_SUBSECTORS

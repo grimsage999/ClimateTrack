@@ -62,15 +62,15 @@ REGIONS = [
 ]
 
 # API Configuration
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") # This variable holds your OpenRouter key
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  # Direct OpenAI access
+OPENAI2_API_KEY = os.getenv("OPENAI2")        # OpenRouter access for scraping
 
-# --- NEW: OpenRouter Specific Configuration ---
+# OpenRouter Configuration for CTVC scraping
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 OPENROUTER_DEFAULT_HEADERS = {
-    "HTTP-Referer": "https://github.com/your-repo", # Optional: Update to your actual GitHub repo URL
+    "HTTP-Referer": "https://github.com/climate-tech-vc-tracker",
     "X-Title": "Climate Tech Funding Tracker",
 }
-# --- END NEW ---
 
 # Scraping configuration
 SCRAPE_DELAY_MIN = 1  # Minimum delay between requests (seconds)
