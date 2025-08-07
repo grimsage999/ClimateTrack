@@ -4,8 +4,8 @@ import streamlit as st
 import time
 from datetime import datetime
 
-# Import our single, powerful scraper
-from sources.scraper import scrape_ctvc_deals 
+# Import deployment-ready scraper
+from sources.deployment_scraper import DeploymentReadyScraper 
 
 # Core and Data components
 from core.funding_event import FundingEventCollection
@@ -21,11 +21,13 @@ def initialize_app():
 
 def ingest_funding_data(data_manager) -> FundingEventCollection:
     """
-    Simplified data ingestion workflow for CTVC.
+    Deployment-ready data ingestion workflow for climate tech deals
     """
-    with st.spinner("Scanning CTVC for the latest climate tech deals..."):
-        # --- CHANGE: Pass the data_manager instance to the scraper ---
-        new_deals_data = scrape_ctvc_deals(data_manager, pages_to_load=2)
+    with st.spinner("Scanning climate tech sources for funding deals..."):
+        # Use deployment-ready scraper
+        scraper = DeploymentReadyScraper()
+        articles = scraper.get_funding_articles()
+        new_deals_data = scraper.analyze_for_funding_deals(articles)
     
     if not new_deals_data:
         st.warning("No new deals found in this scan.")
