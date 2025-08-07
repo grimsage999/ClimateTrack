@@ -4,70 +4,64 @@ import os
 import re
 import time
 import json
-from typing import List, Dict
-from dotenv import load_dotenv
-from openai import OpenAI
+import requests
+from typing import List, Dict, Optional
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.firefox.service import Service as FirefoxService
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.firefox import GeckoDriverManager
+from openai import OpenAI
 import config
-from data.data_manager import DataManager # <-- NEW IMPORT
+from data.data_manager import DataManager
 
-load_dotenv()
-
+# Use OpenRouter with OPENAI2 for deployment compatibility
 client = OpenAI(
-  api_key=config.OPENAI_API_KEY,
-  base_url=config.OPENROUTER_BASE_URL,
-  default_headers=config.OPENROUTER_DEFAULT_HEADERS,
+    api_key=config.OPENAI2_API_KEY,
+    base_url=config.OPENROUTER_BASE_URL,
+    default_headers=config.OPENROUTER_DEFAULT_HEADERS,
 )
 
 # ... (the internal _crawl, _scrape, _extract, _clean functions are unchanged) ...
 
 def _crawl_ctvc_links(pages_to_load=1) -> List[str]:
+    """
+    Deployment-ready CTVC crawler using requests instead of Selenium
+    Works reliably on Replit deployment without browser dependencies
+    """
     base_url = "https://www.ctvc.co/tag/newsletter/"
-    print(f"🕵️  Crawling CTVC Newsletter with Selenium...")
-    options = webdriver.FirefoxOptions()
-    options.add_argument("--headless")
-    driver = None
+    print(f"🕵️  Crawling CTVC Newsletter (deployment-ready mode)...")
+    
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate',
+        'Connection': 'keep-alive',
+    }
     
     try:
-        driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()), options=options)
-        driver.set_page_load_timeout(45)
-        driver.get(base_url)
-        WebDriverWait(driver, 20).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'div.flex-1 h3 > a')))
-        time.sleep(2)
-
-        for i in range(pages_to_load):
-            try:
-                load_more_button = driver.find_element(By.CSS_SELECTOR, "a.load-more")
-                driver.execute_script("arguments[0].scrollIntoView(true);", load_more_button)
-                time.sleep(1)
-                driver.execute_script("arguments[0].click();", load_more_button)
-                print(f"   -> Clicked 'Load More' ({i+1}/{pages_to_load})...")
-                time.sleep(3)
-            except Exception:
-                print("   -> 'Load More' button not found.")
-                break
+        session = requests.Session()
+        session.headers.update(headers)
         
-        soup = BeautifulSoup(driver.page_source, 'lxml')
+        # Get initial page
+        response = session.get(base_url, timeout=30)
+        response.raise_for_status()
+        
+        soup = BeautifulSoup(response.content, 'html.parser')
         unique_urls = set()
+        
+        # Extract article links from initial page
         for link_tag in soup.select('div.flex-1 h3 > a'):
             if 'href' in link_tag.attrs:
                 unique_urls.add("https://www.ctvc.co" + link_tag['href'])
         
-        print(f"   -> Found {len(unique_urls)} unique articles after loading more.\n")
+        # For deployment compatibility, limit to initial page content
+        # Note: JavaScript-heavy pagination isn't accessible without browser automation
+        print(f"   -> Found {len(unique_urls)} articles from initial page (deployment-ready)")
+        print(f"   -> Note: Limited to first page for deployment compatibility")
+        
         return list(unique_urls)
     
     except Exception as e:
-        print(f"   -> 🔴 Error crawling CTVC with Selenium: {e.__class__.__name__}")
+        print(f"   -> Error crawling CTVC: {e}")
         return []
-    finally:
-        if driver:
-            driver.quit()
 
 def _scrape_deals_block(url: str) -> str:
     import requests

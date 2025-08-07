@@ -6,6 +6,8 @@ The Climate Tech Funding Tracker is an AI-powered precision instrument for VC as
 
 **Recent Architectural Refactoring (August 2025)**: The codebase has been restructured around functional domain boundaries rather than file types, creating clear job-to-be-done modules that align with VC workflow needs. The main entry point is now `main.py` instead of `app.py`, reflecting the streamlined architecture.
 
+**Deployment Optimization (August 2025)**: Replaced Selenium-based scraping with deployment-ready solution using requests + BeautifulSoup for Replit compatibility. Configured OpenRouter API access via OPENAI2 secret for reliable AI functionality in production.
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -66,11 +68,12 @@ The application has been refactored from generic file types to functional domain
 - **API Key Management**: Requires OPENAI_API_KEY environment variable
 
 ### Web Scraping Infrastructure
-- **Enhanced API Client**: Integrated APITest2 functionality (https://github.com/PeteM573/APITest2) for advanced scraping
-- **Selenium WebDriver**: JavaScript-rendered content handling with Chrome headless mode
+- **Deployment-Ready Scraper**: Uses requests + BeautifulSoup for Replit compatibility (no browser dependencies)
+- **Enhanced API Client**: Integrated APITest2 functionality for advanced scraping when possible
 - **Trafilatura**: Content extraction from web pages with text processing capabilities  
 - **BeautifulSoup4**: HTML parsing and data extraction
 - **Rate Limiting**: Built-in delays and randomization to respect website policies
+- **Fallback Options**: Alternative scraping methods for deployment environments
 
 ### Data Processing Libraries
 - **Pandas**: Data manipulation and CSV file operations
