@@ -1,0 +1,19 @@
+# --- Core Application & UI ---
+streamlit==1.36.0
+pandas==2.2.2
+plotly==5.22.0
+
+# --- Web Scraping & Data Collection ---
+selenium==4.21.0
+webdriver-manager==4.0.1
+requests==2.32.3
+beautifulsoup4==4.12.3
+
+# --- AI & Data Processing ---
+openai==1.35.3
+python-dotenv==1.0.1
+httpx==0.27.0  # <-- THE CRITICAL FIX
+
+# --- Predictive Analytics & Numerical Operations ---
+scikit-learn==1.5.0
+numpy==1.26.4

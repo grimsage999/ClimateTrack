@@ -1,214 +1,193 @@
-import requests
-import trafilatura
-import re
-from datetime import datetime, timedelta
-import time
-import random
-from typing import List, Dict, Optional
-import config
-from sources.api_client import EnhancedFundingClient, get_funding_data
+# sources/scraper.py
 
-class FundingScraper:
-    """Scraper for climate tech funding data from public sources"""
+import os
+import re
+import time
+import json
+from typing import List, Dict
+from dotenv import load_dotenv
+from openai import OpenAI
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.firefox import GeckoDriverManager
+import config
+from data.data_manager import DataManager # <-- NEW IMPORT
+
+load_dotenv()
+
+client = OpenAI(
+  api_key=config.OPENAI_API_KEY,
+  base_url=config.OPENROUTER_BASE_URL,
+  default_headers=config.OPENROUTER_DEFAULT_HEADERS,
+)
+
+# ... (the internal _crawl, _scrape, _extract, _clean functions are unchanged) ...
+
+def _crawl_ctvc_links(pages_to_load=1) -> List[str]:
+    base_url = "https://www.ctvc.co/tag/newsletter/"
+    print(f"🕵️  Crawling CTVC Newsletter with Selenium...")
+    options = webdriver.FirefoxOptions()
+    options.add_argument("--headless")
+    driver = None
     
-    def __init__(self):
-        self.session = requests.Session()
-        self.session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        })
-        # Initialize enhanced API client from APITest2 integration
-        self.enhanced_client = EnhancedFundingClient()
-        
-    def scrape_techcrunch(self) -> List[Dict]:
-        """Scrape funding news from TechCrunch"""
-        results = []
-        
-        try:
-            # Search for climate tech funding articles
-            # FOCUSED SEARCH: Target specific subsectors only
-            search_terms = [
-                "grid modernization funding",
-                "smart grid investment", 
-                "transmission funding",
-                "carbon capture funding",
-                "direct air capture investment",
-                "carbon storage funding"
-            ]
-            
-            for term in search_terms:
-                # TechCrunch search URL
-                search_url = f"https://techcrunch.com/?s={term.replace(' ', '+')}"
-                
-                try:
-                    response = self.session.get(search_url, timeout=10)
-                    if response.status_code == 200:
-                        # Extract text content
-                        text_content = trafilatura.extract(response.text)
-                        if text_content:
-                            # Parse for funding information
-                            funding_events = self._extract_funding_info(text_content, 'TechCrunch')
-                            results.extend(funding_events)
-                    
-                    # Rate limiting
-                    time.sleep(random.uniform(1, 3))
-                    
-                except Exception as e:
-                    print(f"Error scraping TechCrunch for term '{term}': {str(e)}")
-                    continue
-                    
-        except Exception as e:
-            print(f"Error in TechCrunch scraping: {str(e)}")
-            
-        return results
-    
-    def scrape_venturebeat(self) -> List[Dict]:
-        """Scrape funding news from VentureBeat"""
-        results = []
-        
-        try:
-            # VentureBeat funding section
-            url = "https://venturebeat.com/category/funding/"
-            
-            response = self.session.get(url, timeout=10)
-            if response.status_code == 200:
-                text_content = trafilatura.extract(response.text)
-                if text_content:
-                    funding_events = self._extract_funding_info(text_content, 'VentureBeat')
-                    results.extend(funding_events)
-                    
-        except Exception as e:
-            print(f"Error scraping VentureBeat: {str(e)}")
-            
-        return results
-    
-    def scrape_crunchbase_news(self) -> List[Dict]:
-        """Scrape funding news from Crunchbase News"""
-        results = []
-        
-        try:
-            # Crunchbase News funding section
-            url = "https://news.crunchbase.com/venture/"
-            
-            response = self.session.get(url, timeout=10)
-            if response.status_code == 200:
-                text_content = trafilatura.extract(response.text)
-                if text_content:
-                    funding_events = self._extract_funding_info(text_content, 'Crunchbase News')
-                    results.extend(funding_events)
-                    
-        except Exception as e:
-            print(f"Error scraping Crunchbase News: {str(e)}")
-            
-        return results
-    
-    def scrape_climate_tech_news(self) -> List[Dict]:
-        """Scrape from climate tech specific news sources"""
-        results = []
-        
-        climate_sources = [
-            "https://www.greentechmedia.com/",
-            "https://www.cleantech.com/"
-        ]
-        
-        for url in climate_sources:
+    try:
+        driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()), options=options)
+        driver.set_page_load_timeout(45)
+        driver.get(base_url)
+        WebDriverWait(driver, 20).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'div.flex-1 h3 > a')))
+        time.sleep(2)
+
+        for i in range(pages_to_load):
             try:
-                response = self.session.get(url, timeout=10)
-                if response.status_code == 200:
-                    text_content = trafilatura.extract(response.text)
-                    if text_content:
-                        funding_events = self._extract_funding_info(text_content, url)
-                        results.extend(funding_events)
-                
-                time.sleep(random.uniform(1, 2))
-                
-            except Exception as e:
-                print(f"Error scraping {url}: {str(e)}")
-                continue
-                
-        return results
-    
-    def _extract_funding_info(self, text_content: str, source: str) -> List[Dict]:
-        """Extract funding information from text content"""
-        funding_events = []
+                load_more_button = driver.find_element(By.CSS_SELECTOR, "a.load-more")
+                driver.execute_script("arguments[0].scrollIntoView(true);", load_more_button)
+                time.sleep(1)
+                driver.execute_script("arguments[0].click();", load_more_button)
+                print(f"   -> Clicked 'Load More' ({i+1}/{pages_to_load})...")
+                time.sleep(3)
+            except Exception:
+                print("   -> 'Load More' button not found.")
+                break
         
-        try:
-            # Split text into sentences/paragraphs
-            paragraphs = text_content.split('\n')
+        soup = BeautifulSoup(driver.page_source, 'lxml')
+        unique_urls = set()
+        for link_tag in soup.select('div.flex-1 h3 > a'):
+            if 'href' in link_tag.attrs:
+                unique_urls.add("https://www.ctvc.co" + link_tag['href'])
+        
+        print(f"   -> Found {len(unique_urls)} unique articles after loading more.\n")
+        return list(unique_urls)
+    
+    except Exception as e:
+        print(f"   -> 🔴 Error crawling CTVC with Selenium: {e.__class__.__name__}")
+        return []
+    finally:
+        if driver:
+            driver.quit()
+
+def _scrape_deals_block(url: str) -> str:
+    import requests
+    print(f"  Scraping URL for deals block: {url}")
+    try:
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        response = requests.get(url, headers=headers, timeout=20)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.content, 'lxml')
+        
+        main_content = soup.find('div', class_=lambda c: c and 'content' in c and 'prose' in c)
+        if not main_content:
+            return "Content not found."
+
+        deals_heading = main_content.find(['h2', 'h3'], string=lambda t: t and 'deals of the week' in t.lower())
+        if not deals_heading:
+            return "Content not found."
             
-            for paragraph in paragraphs:
-                # Look for funding indicators
-                funding_keywords = [
-                    'raised', 'funding', 'investment', 'round', 'series',
-                    'million', 'billion', 'venture capital', 'led by'
-                ]
-                
-                if any(keyword.lower() in paragraph.lower() for keyword in funding_keywords):
-                    # Extract company name (usually at the beginning)
-                    company_match = re.search(r'^([A-Za-z\s&]+?)\s+(?:raised|secured|announced)', paragraph, re.IGNORECASE)
-                    company = company_match.group(1).strip() if company_match else None
-                    
-                    # Extract funding amount
-                    amount_match = re.search(r'\$(\d+(?:\.\d+)?)\s*(million|billion|M|B)', paragraph, re.IGNORECASE)
-                    amount = None
-                    if amount_match:
-                        value = float(amount_match.group(1))
-                        unit = amount_match.group(2).lower()
-                        if unit in ['million', 'm']:
-                            amount = value * 1000000
-                        elif unit in ['billion', 'b']:
-                            amount = value * 1000000000
-                    
-                    # Extract funding stage
-                    stage_match = re.search(r'(pre-seed|seed|series [a-z]|growth|venture)', paragraph, re.IGNORECASE)
-                    stage = stage_match.group(1) if stage_match else None
-                    
-                    # Extract investor
-                    investor_match = re.search(r'led by ([^,\n]+)', paragraph, re.IGNORECASE)
-                    investor = investor_match.group(1).strip() if investor_match else None
-                    
-                    # Only add if we have meaningful data
-                    if company and (amount or stage or investor):
-                        funding_events.append({
-                            'company': company,
-                            'amount': amount,
-                            'stage': stage,
-                            'lead_investor': investor,
-                            'description': paragraph[:200] + '...' if len(paragraph) > 200 else paragraph,
-                            'source': source,
-                            'scraped_date': datetime.now().isoformat(),
-                            'raw_text': paragraph
-                        })
+        print("   -> 'Deals of the Week' heading found.")
+        content_parts = []
+        stop_headings = ["in the news", "exits", "new funds", "pop-up", "opportunities & events", "jobs"]
+        for element in deals_heading.find_next_siblings():
+            if element.name in ['h2', 'h3']:
+                element_text = element.get_text(strip=True).lower()
+                if any(stop_word in element_text for stop_word in stop_headings):
+                    break
+            content_parts.append(element.get_text(separator=' ', strip=True))
         
-        except Exception as e:
-            print(f"Error extracting funding info: {str(e)}")
-        
-        return funding_events
+        return "\n".join(content_parts)
     
-    def scrape_all_sources(self) -> List[Dict]:
-        """Scrape all configured sources"""
-        all_results = []
+    except Exception as e:
+        print(f"   -> 🔴 Error scraping article: {e.__class__.__name__}")
+        return "Content not found."
+
+def _extract_deal_data(deal_string: str) -> Dict:
+    prompt = f"""From the deal announcement text, extract: startup_name, amount_raised, funding_stage, and all investors.
+
+**Instructions:**
+- The startup name is the first bolded name.
+- The amount is the bolded dollar/euro value.
+- If a single investor is mentioned after "from", they are the `lead_investor`.
+- If multiple investors are listed, the first is the `lead_investor` and the rest are `other_investors`.
+- If a value is not present, use `null`.
+
+**Example:**
+Text: "✈️ AIR, a Haifa, Israel-based eVTOL developer, raised $23m in Series A funding from Entrée Capital."
+JSON Output: {{"startup_name": "AIR", "amount_raised": "$23m", "funding_stage": "Series A", "lead_investor": "Entrée Capital", "other_investors": []}}
+
+---
+**Text to Process:** "{deal_string}"
+**JSON Output:**"""
+    try:
+        response = client.chat.completions.create(
+            model="meta-llama/llama-3-8b-instruct",
+            response_format={"type": "json_object"},
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return json.loads(response.choices[0].message.content)
+    except Exception as e:
+        print(f"   -> 🔴 AI Error: {e}")
+        return None
+
+def _clean_data(data: Dict) -> Dict:
+    lead = data.get('lead_investor') or data.get('lead_investors')
+    others = data.get('other_investors') or data.get('investors')
+    
+    if isinstance(lead, list) and lead:
+        if not others: others = []
+        others.extend(lead[1:])
+        lead = lead[0]
+
+    cleaned = {k: v for k, v in {
+        'company': data.get('startup_name'), 'amount': data.get('amount_raised'),
+        'stage': data.get('funding_stage'), 'lead_investor': lead, 'other_investors': others
+    }.items() if v is not None and v != 'null' and v != ['null']}
+    
+    return cleaned
+
+# --- PRIMARY HOOK FUNCTION FOR main.py ---
+
+def scrape_ctvc_deals(data_manager: DataManager, pages_to_load=1) -> List[Dict]:
+    """
+    Main function for the UI to call.
+    Orchestrates scraping and extracting CTVC deals.
+    """
+    # --- CHANGE: Use the DataManager to load URLs ---
+    processed_urls = data_manager.load_processed_urls()
+    
+    newsletter_urls = _crawl_ctvc_links(pages_to_load=pages_to_load)
+    
+    new_deals = []
+    
+    for url in newsletter_urls:
+        if url in processed_urls:
+            continue
+            
+        print(f"\n--- Processing article: {url} ---")
+        deals_block = _scrape_deals_block(url)
         
-        print("Scraping TechCrunch...")
-        all_results.extend(self.scrape_techcrunch())
+        if deals_block != "Content not found.":
+            # ... (emoji splitting logic is unchanged) ...
+            emoji_pattern = re.compile(r'[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001FA00-\U0001FAFF\u2600-\u26FF\u2700-\u27BF]+')
+            deal_chunks = emoji_pattern.split(deals_block)[1:]
+            emojis = emoji_pattern.findall(deals_block)
+            deal_lines = [emojis[i] + chunk.strip() for i, chunk in enumerate(deal_chunks)]
+            
+            print(f"   -> Found {len(deal_lines)} potential deals.")
+            for line in deal_lines:
+                if 'raised' in line or 'funding' in line:
+                    time.sleep(1.5)
+                    deal_data = _extract_deal_data(line)
+                    if deal_data:
+                        cleaned_data = _clean_data(deal_data)
+                        if cleaned_data.get('company'):
+                            cleaned_data['source_url'] = url
+                            cleaned_data['source'] = "CTVC"
+                            new_deals.append(cleaned_data)
+                            print(f"   -> ✅ SUCCESS: Extracted '{cleaned_data['company']}'")
         
-        print("Scraping VentureBeat...")
-        all_results.extend(self.scrape_venturebeat())
-        
-        print("Scraping Crunchbase News...")
-        all_results.extend(self.scrape_crunchbase_news())
-        
-        print("Scraping Climate Tech sources...")
-        all_results.extend(self.scrape_climate_tech_news())
-        
-        # Remove duplicates based on company name
-        seen_companies = set()
-        unique_results = []
-        
-        for result in all_results:
-            company_key = result.get('company', '').lower().strip()
-            if company_key and company_key not in seen_companies:
-                seen_companies.add(company_key)
-                unique_results.append(result)
-        
-        print(f"Found {len(unique_results)} unique funding events")
-        return unique_results
+        # --- CHANGE: Use the DataManager to save the URL ---
+        data_manager.add_processed_url(url)
+            
+    return new_deals
