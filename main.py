@@ -4,8 +4,10 @@ import streamlit as st
 import time
 from datetime import datetime
 
-# Import deployment-ready scraper
-from sources.deployment_scraper import DeploymentReadyScraper 
+# Enhanced modules for advanced analytics
+from sources.data_source_integration import MultiSourceDataIntegrator
+from core.enhanced_predictive_analytics import EnhancedPredictiveAnalytics
+from core.investor_intelligence import InvestorIntelligence
 
 # Core and Data components
 from core.funding_event import FundingEventCollection
@@ -14,20 +16,31 @@ from data.vc_sample_data import create_focused_vc_sample_data
 from ui.dashboard import VCDashboard
 
 def initialize_app():
-    """Initialize application components"""
+    """Initialize enhanced application components"""
     data_manager = DataManager()
     dashboard = VCDashboard()
-    return {'data_manager': data_manager, 'dashboard': dashboard}
+    
+    # Enhanced analytics modules
+    data_integrator = MultiSourceDataIntegrator()
+    predictive_analytics = EnhancedPredictiveAnalytics()
+    investor_intelligence = InvestorIntelligence()
+    
+    return {
+        'data_manager': data_manager, 
+        'dashboard': dashboard,
+        'data_integrator': data_integrator,
+        'predictive_analytics': predictive_analytics,
+        'investor_intelligence': investor_intelligence
+    }
 
-def ingest_funding_data(data_manager) -> FundingEventCollection:
+def ingest_funding_data(data_manager, data_integrator) -> FundingEventCollection:
     """
-    Deployment-ready data ingestion workflow for climate tech deals
+    Enhanced multi-source data ingestion workflow for comprehensive deal discovery
     """
-    with st.spinner("Scanning climate tech sources for funding deals..."):
-        # Use deployment-ready scraper
-        scraper = DeploymentReadyScraper()
-        articles = scraper.get_funding_articles()
-        new_deals_data = scraper.analyze_for_funding_deals(articles)
+    with st.spinner("Collecting data from multiple sources (web scraping, SEC EDGAR, APIs)..."):
+        # Use enhanced multi-source data integrator
+        comprehensive_data = data_integrator.collect_comprehensive_funding_data(lookback_days=90)
+        new_deals_data = comprehensive_data.get('funding_data', [])
     
     if not new_deals_data:
         st.warning("No new deals found in this scan.")
@@ -65,14 +78,17 @@ def load_existing_data(data_manager) -> FundingEventCollection:
         return FundingEventCollection([])
 
 def main():
-    """Main application entry point"""
+    """Enhanced main application entry point with advanced analytics"""
     components = initialize_app()
     data_manager = components['data_manager']
     dashboard = components['dashboard']
+    data_integrator = components['data_integrator']
+    predictive_analytics = components['predictive_analytics']
+    investor_intelligence = components['investor_intelligence']
     
     # Handle user actions
     if st.session_state.get('refresh_data'):
-        events = ingest_funding_data(data_manager)
+        events = ingest_funding_data(data_manager, data_integrator)
         del st.session_state['refresh_data']
     elif st.session_state.get('load_sample'):
         with st.spinner("Loading focused VC sample data..."):
@@ -81,11 +97,39 @@ def main():
             st.success("✅ Loaded 10 focused VC deals")
         events = load_existing_data(data_manager)
         del st.session_state['load_sample']
+    elif st.session_state.get('run_enhanced_analytics'):
+        events = load_existing_data(data_manager)
+        # Run enhanced analytics
+        with st.spinner("Running enhanced predictive analytics and investor intelligence..."):
+            df = events.to_dataframe()
+            
+            # Enhanced forecasting
+            forecast_results = predictive_analytics.enhanced_funding_forecast(df)
+            
+            # Competitive analysis  
+            competitive_analysis = predictive_analytics.competitive_landscape_analysis(df)
+            
+            # Investor ecosystem analysis
+            investor_analysis = investor_intelligence.analyze_investor_ecosystem(df)
+            
+            # Store results in session state
+            st.session_state['enhanced_results'] = {
+                'forecast': forecast_results,
+                'competitive': competitive_analysis,
+                'investor': investor_analysis
+            }
+            
+            st.success("✅ Enhanced analytics complete")
+        del st.session_state['run_enhanced_analytics']
     else:
         events = load_existing_data(data_manager)
     
-    # Render dashboard
-    dashboard.render(events)
+    # Pass enhanced components to dashboard
+    dashboard.render(events, enhanced_components={
+        'predictive_analytics': predictive_analytics,
+        'investor_intelligence': investor_intelligence,
+        'data_integrator': data_integrator
+    })
 
 if __name__ == "__main__":
     main()
