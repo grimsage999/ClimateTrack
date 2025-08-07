@@ -161,6 +161,9 @@ class VCDashboard:
             
             if st.button("📋 Load VC Sample Data", key="dash_sample"):
                 st.session_state['load_sample'] = True
+            
+            if st.button("🤖 Generate AI Insights", key="dash_insights"):
+                st.session_state['generate_insights'] = True
                 
             # Startup-Investor Matchmaking
             st.subheader("🎯 Matchmaking")
@@ -544,80 +547,6 @@ class VCDashboard:
         else:
             st.info("Date information needed for trend analysis")
     
-    def _render_predictive_tab(self, events: FundingEventCollection):
-        """Render predictive analytics"""
-        st.subheader("🔮 Predictive Market Intelligence")
-        st.markdown("*Advanced analytics for VC deal flow forecasting and market gap identification*")
-        
-        df = events.to_dataframe()
-        
-        try:
-            # Generate predictions
-            with st.spinner("Analyzing market trends..."):
-                trends = analyze_market_trends(df)
-            
-            with st.spinner("Generating funding predictions..."):
-                predictions = generate_funding_predictions(df)
-            
-            with st.spinner("Identifying investment opportunities..."):
-                gaps = identify_investment_gaps(df)
-            
-            # Key prediction metrics
-            col1, col2, col3 = st.columns(3)
-            
-            with col1:
-                predicted_funding = predictions.get('predictions', {}).get('overall', {}).get('total_predicted_funding', 450)
-                st.metric(
-                    "🔮 6M Predicted Funding",
-                    f"${predicted_funding:.0f}M",
-                    delta="18.5% growth forecast"
-                )
-            
-            with col2:
-                predicted_deals = predictions.get('predictions', {}).get('overall', {}).get('predicted_deal_count', 25)
-                st.metric(
-                    "📊 Expected Deals",
-                    f"{predicted_deals}",
-                    delta="15% increase expected"
-                )
-            
-            with col3:
-                market_growth = predictions.get('predictions', {}).get('overall', {}).get('market_growth_rate', 0.185) * 100
-                st.metric(
-                    "📈 Market Growth Rate",
-                    f"{market_growth:.1f}%",
-                    delta="Accelerating"
-                )
-            
-            # Visualizations
-            st.subheader("📊 Forecasting Models")
-            with st.spinner("Generating predictive visualizations..."):
-                charts = create_predictive_visualizations(trends, predictions)
-            
-            if 'trend_forecast' in charts:
-                st.plotly_chart(charts['trend_forecast'], use_container_width=True)
-            
-            # Market intelligence report
-            st.subheader("🎯 Market Intelligence Report")
-            
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                st.markdown("**🔍 Investment Gaps**") 
-                funding_gaps = gaps.get('funding_gaps', [])
-                for i, gap in enumerate(funding_gaps[:5], 1):
-                    st.markdown(f"**{i}.** {gap}")
-            
-            with col2:
-                st.markdown("**🎯 Investment Recommendations**")
-                recommendations = gaps.get('investment_recommendations', [])
-                for i, rec in enumerate(recommendations[:5], 1):
-                    st.markdown(f"**{i}.** {rec}")
-        
-        except Exception as e:
-            st.error(f"Predictive analytics error: {str(e)}")
-            st.info("Predictive analytics will be available when sufficient data is collected")
-    
     def _render_enhanced_forecasting_tab(self, events: FundingEventCollection, enhanced_components: dict = None):
         """Render enhanced forecasting with confidence intervals and advanced models"""
         st.subheader("🔮 Enhanced Predictive Forecasting")
@@ -698,98 +627,6 @@ class VCDashboard:
     def _render_investor_intelligence_tab(self, events: FundingEventCollection, enhanced_components: dict = None):
         """Render investor intelligence and competitive landscape analysis"""
         st.subheader("🏢 Investor Intelligence & Competitive Landscape")
-        
-        if not enhanced_components or 'investor_intelligence' not in enhanced_components:
-            st.warning("Investor intelligence not initialized. Click 'Run Enhanced Analytics' in the sidebar.")
-            return
-        
-        try:
-            # Check for enhanced results in session state
-            if 'enhanced_results' in st.session_state:
-                investor_analysis = st.session_state['enhanced_results']['investor']
-                
-                # Investor ecosystem overview
-                st.subheader("📊 Investor Ecosystem Overview")
-                
-                col1, col2, col3 = st.columns(3)
-                
-                investor_profiles = investor_analysis.get('investor_profiles', {})
-                
-                with col1:
-                    total_investors = len(investor_profiles)
-                    st.metric("Active Investors", total_investors)
-                
-                with col2:
-                    avg_check_size = sum(profile.get('avg_check_size', 0) for profile in investor_profiles.values()) / max(len(investor_profiles), 1)
-                    st.metric("Avg Check Size", f"${avg_check_size:.1f}M")
-                
-                with col3:
-                    ecosystem_health = investor_analysis.get('ecosystem_health', 'Strong')
-                    st.metric("Ecosystem Health", ecosystem_health)
-                
-                # Top investors analysis
-                st.subheader("🏆 Leading Climate Tech Investors")
-                
-                # Sort investors by total invested
-                sorted_investors = sorted(
-                    investor_profiles.items(),
-                    key=lambda x: x[1].get('total_invested', 0),
-                    reverse=True
-                )
-                
-                for i, (investor_name, profile) in enumerate(sorted_investors[:5]):
-                    with st.expander(f"{i+1}. {investor_name}"):
-                        col1, col2 = st.columns(2)
-                        
-                        with col1:
-                            st.metric("Total Deals", profile.get('total_deals', 0))
-                            st.metric("Total Invested", f"${profile.get('total_invested', 0):.1f}M")
-                        
-                        with col2:
-                            sector_focus = profile.get('sector_distribution', {})
-                            if sector_focus:
-                                top_sector = max(sector_focus.items(), key=lambda x: x[1])
-                                st.metric("Primary Focus", f"{top_sector[0]} ({top_sector[1]} deals)")
-                            
-                            stage_pref = profile.get('stage_preference', {})
-                            if stage_pref:
-                                preferred_stage = max(stage_pref.items(), key=lambda x: x[1])
-                                st.metric("Preferred Stage", f"{preferred_stage[0]} ({preferred_stage[1]} deals)")
-                
-                # Competitive landscape
-                st.subheader("🗺️ Competitive Landscape Mapping")
-                
-                competitive_analysis = st.session_state['enhanced_results']['competitive']
-                market_concentration = competitive_analysis.get('market_concentration', {})
-                
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    st.markdown("**Market Concentration Metrics**")
-                    hhi_index = market_concentration.get('hhi_index', 0.15)
-                    concentration_level = "Low" if hhi_index < 0.15 else "Medium" if hhi_index < 0.25 else "High"
-                    st.metric("Market Concentration", concentration_level, delta=f"HHI: {hhi_index:.3f}")
-                    
-                    top_3_share = market_concentration.get('top_3_share', 0.35) * 100
-                    st.metric("Top 3 Market Share", f"{top_3_share:.1f}%")
-                
-                with col2:
-                    st.markdown("**Market Positioning**")
-                    positioning = competitive_analysis.get('competitive_positions', {})
-                    for sector, position_data in positioning.items():
-                        market_share = position_data.get('market_share', 0) * 100
-                        growth_rate = position_data.get('growth_rate', 0) * 100
-                        st.markdown(f"**{sector}:** {market_share:.1f}% share, {growth_rate:.1f}% growth")
-                
-            else:
-                st.info("Run enhanced analytics to see investor intelligence results.")
-                
-        except Exception as e:
-            st.error(f"Investor intelligence error: {str(e)}")
-    
-    def _render_matchmaking_tab(self, events: FundingEventCollection, enhanced_components: dict = None):
-        """Render startup-investor matchmaking interface and results"""
-        st.subheader("🎯 Startup-Investor Matchmaking")
         
         if not enhanced_components or 'investor_intelligence' not in enhanced_components:
             st.warning("Investor intelligence not initialized. Click 'Run Enhanced Analytics' in the sidebar.")
@@ -919,3 +756,95 @@ class VCDashboard:
             if st.button("📋 Load Sample VC Deals", type="primary", key="empty_load_sample"):
                 st.session_state['load_sample'] = True
                 st.rerun()
+            return
+        
+        try:
+            # Check for enhanced results in session state
+            if 'enhanced_results' in st.session_state:
+                investor_analysis = st.session_state['enhanced_results']['investor']
+                
+                # Investor ecosystem overview
+                st.subheader("📊 Investor Ecosystem Overview")
+                
+                col1, col2, col3 = st.columns(3)
+                
+                investor_profiles = investor_analysis.get('investor_profiles', {})
+                
+                with col1:
+                    total_investors = len(investor_profiles)
+                    st.metric("Active Investors", total_investors)
+                
+                with col2:
+                    avg_check_size = sum(profile.get('avg_check_size', 0) for profile in investor_profiles.values()) / max(len(investor_profiles), 1)
+                    st.metric("Avg Check Size", f"${avg_check_size:.1f}M")
+                
+                with col3:
+                    ecosystem_health = investor_analysis.get('ecosystem_health', 'Strong')
+                    st.metric("Ecosystem Health", ecosystem_health)
+                
+                # Top investors analysis
+                st.subheader("🏆 Leading Climate Tech Investors")
+                
+                # Sort investors by total invested
+                sorted_investors = sorted(
+                    investor_profiles.items(),
+                    key=lambda x: x[1].get('total_invested', 0),
+                    reverse=True
+                )
+                
+                for i, (investor_name, profile) in enumerate(sorted_investors[:5]):
+                    with st.expander(f"{i+1}. {investor_name}"):
+                        col1, col2 = st.columns(2)
+                        
+                        with col1:
+                            st.metric("Total Deals", profile.get('total_deals', 0))
+                            st.metric("Total Invested", f"${profile.get('total_invested', 0):.1f}M")
+                        
+                        with col2:
+                            sector_focus = profile.get('sector_distribution', {})
+                            if sector_focus:
+                                top_sector = max(sector_focus.items(), key=lambda x: x[1])
+                                st.metric("Primary Focus", f"{top_sector[0]} ({top_sector[1]} deals)")
+                            
+                            stage_pref = profile.get('stage_preference', {})
+                            if stage_pref:
+                                preferred_stage = max(stage_pref.items(), key=lambda x: x[1])
+                                st.metric("Preferred Stage", f"{preferred_stage[0]} ({preferred_stage[1]} deals)")
+                
+                # Competitive landscape
+                st.subheader("🗺️ Competitive Landscape Mapping")
+                
+                competitive_analysis = st.session_state['enhanced_results']['competitive']
+                market_concentration = competitive_analysis.get('market_concentration', {})
+                
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.markdown("**Market Concentration Metrics**")
+                    hhi_index = market_concentration.get('hhi_index', 0.15)
+                    concentration_level = "Low" if hhi_index < 0.15 else "Medium" if hhi_index < 0.25 else "High"
+                    st.metric("Market Concentration", concentration_level, delta=f"HHI: {hhi_index:.3f}")
+                    
+                    top_3_share = market_concentration.get('top_3_share', 0.35) * 100
+                    st.metric("Top 3 Market Share", f"{top_3_share:.1f}%")
+                
+                with col2:
+                    st.markdown("**Market Positioning**")
+                    positioning = competitive_analysis.get('competitive_positions', {})
+                    for sector, position_data in positioning.items():
+                        market_share = position_data.get('market_share', 0) * 100
+                        growth_rate = position_data.get('growth_rate', 0) * 100
+                        st.markdown(f"**{sector}:** {market_share:.1f}% share, {growth_rate:.1f}% growth")
+                
+            else:
+                st.info("Run enhanced analytics to see investor intelligence results.")
+                
+        except Exception as e:
+            st.error(f"Investor intelligence error: {str(e)}")
+    
+    def _render_matchmaking_tab(self, events: FundingEventCollection, enhanced_components: dict = None):
+        """Render startup-investor matchmaking interface and results"""
+        st.subheader("🎯 Startup-Investor Matchmaking")
+        
+        if not enhanced_components or 'investor_intelligence' not in enhanced_components:
+            st.warning("Investor intelligence not initialized. Click 'Run Enhanced Analytics' in the sidebar.")
