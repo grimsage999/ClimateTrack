@@ -1,26 +1,31 @@
-company,amount,stage,lead_investor,other_investors,sector,region,location,date,description,source,confidence_score,keywords,source_url,published_date
-GridFlow Technologies,18.0,Series A,Energy Impact Partners,"['Shell Ventures', 'Breakthrough Energy Ventures']",Grid Modernization,North America,"Boston, MA",2025-08-01,AI-powered grid optimization platform for real-time demand response and load balancing,TechCrunch,0.96,"['grid optimization', 'demand response', 'AI', 'load balancing']",https://techcrunch.com/gridflow-series-a,2025-08-01
-CarbonVault Systems,35.0,Series A,Khosla Ventures,"['Microsoft Climate Innovation Fund', 'Amazon Climate Pledge Fund']",Carbon Capture,North America,"Palo Alto, CA",2025-07-30,Direct air capture technology with enhanced mineralization storage and 99% capture rate,VentureBeat,0.94,"['direct air capture', 'DAC', 'carbon storage', 'mineralization']",https://venturebeat.com/carbonvault-funding,2025-07-30
-SmartGrid Analytics,12.5,Seed,Congruent Ventures,"['Clean Energy Ventures', 'Powerhouse Ventures']",Grid Modernization,North America,"Austin, TX",2025-07-27,Machine learning platform for predictive grid maintenance and fault detection,Crunchbase News,0.92,"['predictive maintenance', 'grid analytics', 'machine learning', 'fault detection']",https://news.crunchbase.com/smartgrid-seed,2025-07-27
-AtmosCapture Inc,8.2,Seed,First Round Capital,"['Lowercarbon Capital', 'Prime Impact Fund']",Carbon Capture,North America,"Denver, CO",2025-07-25,Modular direct air capture units for distributed carbon removal at industrial scale,CleanTech.com,0.9,"['modular DAC', 'distributed capture', 'carbon removal', 'industrial scale']",https://cleantech.com/atmoscapture-seed,2025-07-25
-TransmissionIQ,22.0,Series A,NEA (New Enterprise Associates),"['GE Ventures', 'Siemens Next47']",Grid Modernization,North America,"San Jose, CA",2025-07-23,Advanced transmission line monitoring using IoT sensors and digital twin technology,TechCrunch,0.93,"['transmission monitoring', 'IoT sensors', 'digital twin', 'grid infrastructure']",https://techcrunch.com/transmissioniq-series-a,2025-07-23
-CO2 Solutions Ltd,15.8,Series A,Obvious Ventures,"['Climate Capital', 'Energy Innovation Capital']",Carbon Capture,Europe,"London, UK",2025-07-21,Enzyme-enhanced carbon capture technology for industrial emission reduction,Green Tech Media,0.89,"['enzyme capture', 'industrial emissions', 'carbon utilization', 'CCS']",https://greentechmedia.com/co2solutions-funding,2025-07-21
-MicroGrid Dynamics,6.5,Seed,Powerhouse Ventures,"['Clean Energy Trust', 'Elemental Excelerator']",Grid Modernization,North America,"Portland, OR",2025-07-19,Autonomous microgrid control systems for resilient distributed energy networks,VentureBeat,0.91,"['microgrid', 'autonomous control', 'distributed energy', 'grid resilience']",https://venturebeat.com/microgrid-seed,2025-07-19
-AirMend Technologies,28.5,Series A,Breakthrough Energy Ventures,"['Shopify Sustainability Fund', 'Stripe Climate']",Carbon Capture,North America,"Montreal, Canada",2025-07-17,Scalable direct air capture with permanent geological storage partnerships,Crunchbase News,0.95,"['scalable DAC', 'geological storage', 'permanent removal', 'carbon credits']",https://news.crunchbase.com/airmend-series-a,2025-07-17
-GridSecure Systems,4.8,Seed,Clean Energy Ventures,"['Energy Foundry', 'Evok Innovations']",Grid Modernization,North America,"Chicago, IL",2025-07-15,Cybersecurity platform specifically designed for smart grid infrastructure protection,CleanTech.com,0.88,"['grid cybersecurity', 'smart grid', 'infrastructure protection', 'cyber threats']",https://cleantech.com/gridsecure-seed,2025-07-15
-CaptureTech Innovations,11.2,Seed,Lowercarbon Capital,"['Climate Technology Fund', 'Version One Ventures']",Carbon Capture,North America,"Vancouver, Canada",2025-07-12,Ocean-based direct air capture using novel sorbent materials and renewable energy,TechCrunch,0.87,"['ocean capture', 'sorbent materials', 'renewable powered', 'maritime DAC']",https://techcrunch.com/capturetech-seed,2025-07-12
-Base Power,200.0,Series B,Addition,"['Andreessen Horowitz', 'Lightspeed Venture Partners', 'Valor Equity Partners', 'Altimeter']",,,,,,CTVC,,,https://www.ctvc.co/coal-hard-facts-241/,
-Corinex,30.0,Growth,Adara Ventures,"['Energy Growth Momentum', 'Suma Capital']",,,,,,CTVC,,,https://www.ctvc.co/coal-hard-facts-241/,
-AgNext Technologies,0.0,Series B,Novo Holdings,['The Hashgraph Group (THG)'],,,,,,CTVC,,,https://www.ctvc.co/coal-hard-facts-241/,
-Simplifyber,12.0,Series A,Suzano Ventures,"['At One Ventures', 'Collateral Good', 'MIH Capital Management', 'Meliorate Partners']",,,,,,CTVC,,,https://www.ctvc.co/coal-hard-facts-241/,
-Tracera,12.0,Series A,Foundry Group,"['Contour Venture Partners', 'Rho Ignition', 'Tola Capital']",,,,,,CTVC,,,https://www.ctvc.co/coal-hard-facts-241/,
-Zero Industrial,10.0,Series A,Evok Innovations,['Rusheen Capital Management'],,,,,,CTVC,,,https://www.ctvc.co/coal-hard-facts-241/,
-Gridsight,75.0,Series A,AirTree Ventures,"['Aera VC', 'Energy Transition Ventures']",,,,,,CTVC,,,https://www.ctvc.co/coal-hard-facts-241/,
-Nafas,3.0,Seed,Qatar Development Bank (QDB),['Rigel Capital'],,,,,,CTVC,,,https://www.ctvc.co/coal-hard-facts-241/,
-Vimano,3.0,Seed,Ankur Capital,,,,,,,CTVC,,,https://www.ctvc.co/coal-hard-facts-241/,
-Matoha,2.0,Seed,Archipelago Investors,"['Circular Plastics Accelerator', 'British Design Fund', 'Fashion For Good', 'The Conduit Connect']",,,,,,CTVC,,,https://www.ctvc.co/coal-hard-facts-241/,
-Enpal,121.0,PE Expansion,TPG Rise Climate,,,,,,,CTVC,,,https://www.ctvc.co/coal-hard-facts-241/,
-Up Catalyst,20.0,Debt,European Investment Bank (EIB),,,,,,,CTVC,,,https://www.ctvc.co/coal-hard-facts-241/,
-Xoople,29.0,Growth,AXIS Participaciones Empresariales,['CDTI'],,,,,,CTVC,,,https://www.ctvc.co/ira-cuts-in-the-budget-battle-246/,
-Saildrone,60.0,Growth,Export and Investment Fund of Denmark (EIFO),"['Academy Securities', 'BZH Capital', 'Calm Ventures', 'Crowley']",,,,,,CTVC,,,https://www.ctvc.co/ira-cuts-in-the-budget-battle-246/,
-Zeno Power,50.0,Series B,Hanaco Venture Capital,"['7i Capital', 'Balerion Space', 'Beyond Earth Ventures', 'Jaws Ventures', 'other investors']",,,,,,CTVC,,,https://www.ctvc.co/ira-cuts-in-the-budget-battle-246/,
+company,amount,other_investors,sector,source_url,source,lead_investor
+TAE Technologies,150.0,"['Chevron', 'Google', 'NEA']",Energy,https://www.ctvc.co/a-tale-of-two-fundraises-249/,CTVC,
+Aerones,62.0,"['S2G Investments', 'Blume Equity', 'Carbon Equity', 'Change Ventures']",Energy,https://www.ctvc.co/a-tale-of-two-fundraises-249/,CTVC,Activate Capital Partners
+Treefera,30.0,"['AlbionVC', 'Endeit Capital', 'Triple Point Ventures', 'Twin Path Ventures']",Carbon,https://www.ctvc.co/a-tale-of-two-fundraises-249/,CTVC,Notion Capital
+Manex AI,9.0,"['Lightspeed Venture Partners', 'CDTM Venture Fund (Center for Digital Technology & Management)', 'DI Technology']",Industrials,https://www.ctvc.co/a-tale-of-two-fundraises-249/,CTVC,BlueYard Capital
+Alrik,7.0,['Pi Labs'],Built Environment,https://www.ctvc.co/a-tale-of-two-fundraises-249/,CTVC,People Ventures
+Atmen,6.0,"['Revent', 'Vireo Ventures']",Built Environment,https://www.ctvc.co/a-tale-of-two-fundraises-249/,CTVC,Project A Ventures
+Kumulus Water,4.0,"['Bpifrance', 'Flat6Labs', 'Kalys Ventures', 'PlusVC', 'Spadel']",Food & Agriculture,https://www.ctvc.co/a-tale-of-two-fundraises-249/,CTVC,
+ClearLeaf,4.0,['M7 Holdings'],Food & Agriculture,https://www.ctvc.co/a-tale-of-two-fundraises-249/,CTVC,Hawthorne Food Ventures
+Termina,2.0,"['Archangel Ventures', 'Skalata Ventures']",Energy,https://www.ctvc.co/a-tale-of-two-fundraises-249/,CTVC,EVP
+Groundley,1.0,,Built Environment,https://www.ctvc.co/a-tale-of-two-fundraises-249/,CTVC,Export and Investment Fund of Denmark (EIFO)
+REplace,2.0,"['Adam/a', 'Techstars', 'Malbec Ventures']",Built Environment,https://www.ctvc.co/a-tale-of-two-fundraises-249/,CTVC,Gravity Climate
+Believ,406.0,"['Zouk Capital', 'ABN AMRO', 'MUFG Bank', 'NatWest']",Mobility,https://www.ctvc.co/a-tale-of-two-fundraises-249/,CTVC,Liberty Global
+GIGA Storage,343.0,,Energy,https://www.ctvc.co/a-tale-of-two-fundraises-249/,CTVC,
+Eavor,65.0,,Energy,https://www.ctvc.co/a-tale-of-two-fundraises-249/,CTVC,Canada Growth Fund
+Charbone Hydrogen,50.0,['True Green Capital'],Energy,https://www.ctvc.co/a-tale-of-two-fundraises-249/,CTVC,True Green Capital
+mPower Technology,21.0,['Shield Capital'],Energy,https://www.ctvc.co/smrs-for-gpts-245/,CTVC,Razor's Edge Ventures
+Alt Mobility,0.0,"['EV2 Ventures', 'Eurazeo', 'Shell Ventures']",Mobility,https://www.ctvc.co/smrs-for-gpts-245/,CTVC,Beyond Capital Ventures
+Rainmaker,25.0,"['1517 Fund', 'Long Journey Ventures', 'Starship Ventures']",Water/Sustainability,https://www.ctvc.co/smrs-for-gpts-245/,CTVC,Lowercarbon Capital
+Exterra Carbon Solutions,15.0,"['Clean Energy Ventures', 'BASF', 'Government Of Quebec', 'Investissement Québec']",Carbon,https://www.ctvc.co/smrs-for-gpts-245/,CTVC,BDC Capital
+Solena Materials,7.0,"['Insempra', 'SynBioVen']",Food & Agriculture,https://www.ctvc.co/smrs-for-gpts-245/,CTVC,
+Rewbi,4.0,"['SurgePoint', 'Aera', 'General Catalyst', 'Collab Fund']",Energy,https://www.ctvc.co/smrs-for-gpts-245/,CTVC,Y combinator
+WeSky,1.0,['Other'],Mobility,https://www.ctvc.co/smrs-for-gpts-245/,CTVC,Coinvest Capital
+Aypa Power,1100.0,"['ING Capital LLC', 'Nomura', 'Santander Corporate & Investment Banking (SCIB)', 'Société Générale']",Energy,https://www.ctvc.co/smrs-for-gpts-245/,CTVC,Apterra Infrastructure Capital
+Ascend Elements,326.0,,Energy,https://www.ctvc.co/smrs-for-gpts-245/,CTVC,Poland Ministry of Economic Development and Technology
+LAXEY,108.0,,Food & Agriculture,https://www.ctvc.co/smrs-for-gpts-245/,CTVC,Arion Bank
+UrbanVolt,45.0,,"Energy (generation, storage, grid, batteries, fusion)",https://www.ctvc.co/smrs-for-gpts-245/,CTVC,HSBC
+LAXEY,40.0,,Food & Agriculture,https://www.ctvc.co/smrs-for-gpts-245/,CTVC,
+Niche Mobility,2.0,"['Clave Capital', 'Copreci', 'Mondragon']",Mobility,https://www.ctvc.co/smrs-for-gpts-245/,CTVC,
+Twelve,0.0,['United Airlines Ventures'],"Carbon (carbon capture, removal, utilization, markets)",https://www.ctvc.co/smrs-for-gpts-245/,CTVC,United Airlines Ventures
+TerraPower,650.0,"['Bill Gates', 'HD Hyundai', 'NVentures']",Energy,https://www.ctvc.co/epa-puts-corn-on-the-policy-menu-251/,CTVC,

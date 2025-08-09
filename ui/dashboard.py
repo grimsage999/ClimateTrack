@@ -257,17 +257,28 @@ class VCDashboard:
                 st.subheader("🌱 Funding by Sector")
                 sector_data = df.groupby('sector')['amount'].sum().reset_index()
                 
+                # --- THIS IS THE FIX ---
+                # We remove the hardcoded 'color_discrete_sequence'.
+                # Plotly will now automatically assign a unique color to every sector it finds.
                 fig = px.pie(
                     sector_data, 
                     values='amount', 
                     names='sector',
-                    title="Distribution of Funding by Sector",
-                    color_discrete_sequence=['#1B4332', '#52796F', '#A8DADC']
+                    title="Distribution of Funding by Sector"
+                    # No longer need: color_discrete_sequence=...
+                )
+                # --- END OF FIX ---
+
+                fig.update_traces(
+                    textposition='inside', 
+                    textinfo='percent+label',
+                    hovertemplate='<b>%{label}</b><br>Amount: %{value:$,.0f}<br>Percentage: %{percent}<extra></extra>'
                 )
                 fig.update_layout(
                     plot_bgcolor='rgba(0,0,0,0)',
                     paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(family="Inter, sans-serif", color='#1B4332')
+                    font=dict(family="Inter, sans-serif", color='#1B4332'),
+                    showlegend=False # The pie chart labels are now the legend
                 )
                 st.plotly_chart(fig, use_container_width=True)
         
@@ -282,8 +293,8 @@ class VCDashboard:
                     x='stage',
                     y='amount',
                     title="Funding Amount by Stage",
-                    color='amount',
-                    color_continuous_scale=['#A8DADC', '#52796F', '#1B4332']
+                    color='stage', # Color by stage name for clarity
+                    color_discrete_sequence=px.colors.qualitative.Pastel # Use a pleasant, auto-scaling color scheme
                 )
                 fig.update_layout(
                     plot_bgcolor='rgba(241, 250, 238, 0.8)',
@@ -292,7 +303,7 @@ class VCDashboard:
                 )
                 st.plotly_chart(fig, use_container_width=True)
         
-        # Deal intelligence summary
+        # Deal intelligence summary (no changes needed here)
         st.subheader("🎯 Deal Intelligence Summary")
         intelligence = self.processor.generate_deal_intelligence(events)
         

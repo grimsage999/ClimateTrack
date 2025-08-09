@@ -1,4 +1,4 @@
-# sources/scraper.py (v21 - With Amount Parsing Fix)
+# sources/scraper.py (v21 - AI-Powered Subsector Classification)
 
 import os
 import re
@@ -10,7 +10,9 @@ import requests
 from dotenv import load_dotenv
 from openai import OpenAI
 from bs4 import BeautifulSoup
+from utils import parse_funding_amount
 
+# Path-fixing code for standalone testing
 if __name__ == "__main__":
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     sys.path.insert(0, project_root)
@@ -26,38 +28,8 @@ client = OpenAI(
   default_headers=config.OPENROUTER_DEFAULT_HEADERS,
 )
 
-# --- NEW HELPER FUNCTION TO PARSE AMOUNTS ---
-def _parse_amount_string(amount_str) -> float:
-    """
-    Parses a string like '$12.5m' or '€200 million' into a float representing millions.
-    """
-    if amount_str is None or not isinstance(amount_str, str):
-        return 0.0
-    
-    cleaned_str = str(amount_str).lower().strip()
-    if 'undisclosed' in cleaned_str:
-        return 0.0
-    
-    # Remove currency symbols and other noise
-    cleaned_str = re.sub(r'[$\€,]', '', cleaned_str)
-    
-    # Find the numeric part of the string
-    numeric_match = re.search(r'([\d\.]+)', cleaned_str)
-    if not numeric_match:
-        return 0.0
-        
-    value = float(numeric_match.group(1))
-    
-    # Apply multipliers
-    if 'b' in cleaned_str or 'billion' in cleaned_str:
-        return value * 1000  # Convert billions to millions
-    # 'm' or 'million' is the default, so no multiplier needed
-    
-    return value
-
-
+# ... (internal functions _crawl_ctvc_links and _scrape_deals_block are unchanged) ...
 def _crawl_ctvc_links(pages_to_load=3) -> List[str]:
-    # ... (This function is correct and unchanged)
     print("🕵️  Crawling CTVC Newsletter using direct API calls...")
     api_url = "https://www.ctvc.co/ghost/api/content/posts/"
     params = {'key': '9faa8677cc07b3b2c3938b15d3', 'filter': 'tag:newsletter', 'limit': 6, 'fields': 'url', 'include': 'tags'}
@@ -80,7 +52,6 @@ def _crawl_ctvc_links(pages_to_load=3) -> List[str]:
     return list(all_urls)
 
 def _scrape_deals_block(url: str) -> str:
-    # ... (This function is correct and unchanged)
     print(f"  Scraping URL for deals block: {url}")
     try:
         headers = {'User-Agent': 'Mozilla/5.0'}
@@ -104,23 +75,43 @@ def _scrape_deals_block(url: str) -> str:
         print(f"   -> 🔴 Error scraping article: {e.__class__.__name__}")
         return "Content not found."
 
+# --- THIS IS THE KEY CHANGE ---
 def _extract_deal_data(deal_string: str) -> Dict:
-    # ... (This function is correct and unchanged)
-    prompt = f"""From the deal announcement text, extract: startup_name, amount_raised, funding_stage, and all investors.
+    """
+    V3 - Upgraded AI prompt to infer the subsector from the description.
+    """
+    prompt = f"""From the deal announcement text, extract the startup_name, amount_raised, funding_stage, all investors, AND infer the subsector.
+
+**Valid Subsectors to choose from:**
+- Energy (generation, storage, grid, batteries, fusion)
+- Mobility (EVs, aviation, micromobility, charging)
+- Food & Agriculture (agtech, alternative proteins, sustainable farming)
+- Industrials (green steel, cement, chemicals, manufacturing)
+- Carbon (carbon capture, removal, utilization, markets)
+- Built Environment (HVAC, green buildings, sustainable materials)
+- Climate Adaptation (risk modeling, water, resilience)
+
 **Instructions:**
 - The startup name is the first bolded name.
 - The amount is the bolded dollar/euro value.
-- If a single investor is mentioned after "from", they are the `lead_investor`.
-- If multiple investors are listed, the first is the `lead_investor` and the rest are `other_investors`.
+- If a single investor is mentioned, they are the `lead_investor`.
+- If multiple investors are listed, the first is the `lead_investor`.
+- **Infer the `subsector` from the company description using the list above.**
 - If a value is not present, use `null`.
+
 **Example:**
 Text: "✈️ AIR, a Haifa, Israel-based eVTOL developer, raised $23m in Series A funding from Entrée Capital."
-JSON Output: {{"startup_name": "AIR", "amount_raised": "$23m", "funding_stage": "Series A", "lead_investor": "Entrée Capital", "other_investors": []}}
+JSON Output: {{"startup_name": "AIR", "amount_raised": "$23m", "funding_stage": "Series A", "lead_investor": "Entrée Capital", "other_investors": [], "subsector": "Mobility"}}
+
 ---
 **Text to Process:** "{deal_string}"
 **JSON Output:**"""
     try:
-        response = client.chat.completions.create(model="meta-llama/llama-3-8b-instruct", response_format={"type": "json_object"}, messages=[{"role": "user", "content": prompt}])
+        response = client.chat.completions.create(
+            model="meta-llama/llama-3-8b-instruct",
+            response_format={"type": "json_object"},
+            messages=[{"role": "user", "content": prompt}]
+        )
         return json.loads(response.choices[0].message.content)
     except Exception as e:
         print(f"   -> 🔴 AI Error: {e}")
@@ -128,14 +119,8 @@ JSON Output: {{"startup_name": "AIR", "amount_raised": "$23m", "funding_stage": 
 
 def _clean_data(data: Dict) -> Dict:
     """
-    Cleans and normalizes the raw data from the AI.
-    NOW INCLUDES AMOUNT PARSING.
+    V2 - Cleans AI output and uses the new parser to convert amount to a float.
     """
-    # --- THIS IS THE KEY CHANGE ---
-    amount_str = data.get('amount_raised')
-    numeric_amount = _parse_amount_string(amount_str)
-    # --- END CHANGE ---
-
     lead = data.get('lead_investor') or data.get('lead_investors')
     others = data.get('other_investors') or data.get('investors')
     
@@ -143,26 +128,33 @@ def _clean_data(data: Dict) -> Dict:
         if not others: others = []
         others.extend(lead[1:])
         lead = lead[0]
+    
+    # --- THIS IS THE FIX ---
+    # Get the raw amount string from the AI
+    amount_str = data.get('amount_raised')
+    # Use our new utility to convert it to a clean float (in millions)
+    numeric_amount = parse_funding_amount(amount_str)
+    # --- END OF FIX ---
 
     cleaned = {k: v for k, v in {
         'company': data.get('startup_name'),
-        'amount': numeric_amount, # Use the parsed numeric amount
-        'stage': data.get('funding_stage'),
+        'amount': numeric_amount, # Use the cleaned number
+        'stage': data.get('stage'),
         'lead_investor': lead,
-        'other_investors': others
+        'other_investors': others,
+        'sector': data.get('subsector')
     }.items() if v is not None and v != 'null' and v != ['null']}
     
     return cleaned
+# --- END OF KEY CHANGES ---
 
 # --- PRIMARY HOOK FUNCTION (Unchanged) ---
-def scrape_ctvc_deals(data_manager: DataManager, pages_to_load=3, target_deal_count=15):
-    # ... (This function is correct and unchanged)
+def scrape_ctvc_deals(data_manager: DataManager, pages_to_load=3, target_deal_count=15) -> List[Dict]:
     processed_urls = data_manager.load_processed_urls()
     newsletter_urls = _crawl_ctvc_links(pages_to_load=pages_to_load)
-    deals_found_count = 0
-    
+    new_deals = []
     for url in newsletter_urls:
-        if deals_found_count >= target_deal_count:
+        if len(new_deals) >= target_deal_count:
             print(f"🎯 Target of {target_deal_count} new deals reached. Halting scan.")
             break
         if url in processed_urls: continue
@@ -175,7 +167,7 @@ def scrape_ctvc_deals(data_manager: DataManager, pages_to_load=3, target_deal_co
             deal_lines = [emojis[i] + chunk.strip() for i, chunk in enumerate(deal_chunks)]
             print(f"   -> Found {len(deal_lines)} potential deals.")
             for line in deal_lines:
-                if deals_found_count >= target_deal_count: break
+                if len(new_deals) >= target_deal_count: break
                 if 'raised' in line or 'funding' in line:
                     time.sleep(1.5)
                     deal_data = _extract_deal_data(line)
@@ -184,16 +176,22 @@ def scrape_ctvc_deals(data_manager: DataManager, pages_to_load=3, target_deal_co
                         if cleaned_data.get('company'):
                             cleaned_data['source_url'] = url
                             cleaned_data['source'] = "CTVC"
-                            yield cleaned_data
-                            deals_found_count += 1
+                            new_deals.append(cleaned_data)
                             print(f"   -> ✅ SUCCESS: Extracted '{cleaned_data['company']}'")
         data_manager.add_processed_url(url)
+    return new_deals
 
 # --- TEST BLOCK (Unchanged) ---
 if __name__ == "__main__":
+    # ... (rest of the test block is unchanged) ...
     print("--- Running scraper.py in Standalone Test Mode ---")
+    
+    # We need a DataManager instance for the function to work
     test_data_manager = DataManager()
-    latest_deals = list(scrape_ctvc_deals(test_data_manager, pages_to_load=1, target_deal_count=5))
+    
+    # We'll crawl just 1 page for a quick test
+    latest_deals = scrape_ctvc_deals(test_data_manager, pages_to_load=1, target_deal_count=15)
+    
     if latest_deals:
         print(f"\n--- SCRAPER TEST COMPLETE ---")
         print(f"Successfully extracted {len(latest_deals)} new deals.")
