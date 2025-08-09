@@ -288,14 +288,18 @@ class VCDealProcessor:
         
         # Investor concentration
         investor_counts = df['lead_investor'].value_counts()
-        if investor_counts.iloc[0] > len(df) * 0.3:  # One investor > 30% of deals
+        if len(investor_counts) > 0 and investor_counts.iloc[0] > len(df) * 0.3:  # One investor > 30% of deals
             signals.append(f"High investor concentration: {investor_counts.index[0]} very active")
         
         # Sector trends
         sector_counts = df['sector'].value_counts()
-        dominant_sector = sector_counts.index[0]
-        if sector_counts.iloc[0] > sector_counts.iloc[1] * 1.5:
-            trends.append(f"{dominant_sector} deals dominating ({sector_counts.iloc[0]} vs {sector_counts.iloc[1]})")
+        if len(sector_counts) >= 2:
+            dominant_sector = sector_counts.index[0]
+            if sector_counts.iloc[0] > sector_counts.iloc[1] * 1.5:
+                trends.append(f"{dominant_sector} deals dominating ({sector_counts.iloc[0]} vs {sector_counts.iloc[1]})")
+        elif len(sector_counts) == 1:
+            dominant_sector = sector_counts.index[0]
+            trends.append(f"{dominant_sector} is the only active sector ({sector_counts.iloc[0]} deals)")
         
         # Stage trends
         stage_counts = df['stage'].value_counts()

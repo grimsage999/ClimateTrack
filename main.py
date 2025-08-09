@@ -1,45 +1,71 @@
-# main.py (v6 - Definitive State Management Fix)
-
 import streamlit as st
 import time
-import os # <-- NEW IMPORT
+import os
 from datetime import datetime
 
-from sources.scraper import scrape_ctvc_deals 
+# Enhanced modules for advanced analytics
+from sources.data_source_integration import MultiSourceDataIntegrator
+from core.enhanced_predictive_analytics import EnhancedPredictiveAnalytics
+from core.investor_intelligence import InvestorIntelligence
+
+# Core and Data components
 from core.funding_event import FundingEvent, FundingEventCollection
+from sources.scraper import scrape_ctvc_deals 
 from data.data_manager import DataManager
 from data.vc_sample_data import create_focused_vc_sample_data
 from ui.dashboard import VCDashboard
 
 def initialize_app():
-    """Initialize application components"""
+    """Initialize enhanced application components"""
     data_manager = DataManager()
     dashboard = VCDashboard()
-    return {'data_manager': data_manager, 'dashboard': dashboard}
+    
+    # Enhanced analytics modules
+    data_integrator = MultiSourceDataIntegrator()
+    predictive_analytics = EnhancedPredictiveAnalytics()
+    investor_intelligence = InvestorIntelligence()
+    
+    return {
+        'data_manager': data_manager, 
+        'dashboard': dashboard,
+        'data_integrator': data_integrator,
+        'predictive_analytics': predictive_analytics,
+        'investor_intelligence': investor_intelligence
+    }
 
-def ingest_funding_data(data_manager):
+def ingest_funding_data(data_manager, data_integrator=None) -> FundingEventCollection:
     """
-    Data ingestion workflow that consumes the scraper's generator for real-time UI feedback.
+    Ingest data from multiple sources or scrape CTVC depending on available modules.
     """
     new_deals_data = []
     deals_found_count = 0
-    with st.status("Scanning for the latest climate tech deals...", expanded=True) as status:
-        status.write("🕵️  Initializing CTVC scan...")
-        
-        for deal in scrape_ctvc_deals(data_manager, pages_to_load=3, target_deal_count=15):
-            new_deals_data.append(deal)
-            deals_found_count += 1
-            status.update(label=f"Scan in progress... Found {deals_found_count} deals. Latest: **{deal.get('company')}**")
 
-        if not new_deals_data:
-            status.update(label="Scan complete. No new deals found.", state="complete", expanded=False)
-            time.sleep(2)
-            return
-        
-        status.write(f"💾 Saving {len(new_deals_data)} new deals to database...")
+    if data_integrator:
+        with st.spinner("Collecting data from multiple sources (web scraping, SEC EDGAR, APIs)..."):
+            comprehensive_data = data_integrator.collect_comprehensive_funding_data(lookback_days=90)
+            new_deals_data = comprehensive_data.get('funding_data', [])
+    else:
+        with st.status("Scanning for the latest climate tech deals...", expanded=True) as status:
+            status.write("🕵️  Initializing CTVC scan...")
+            for deal in scrape_ctvc_deals(data_manager, pages_to_load=3, target_deal_count=15):
+                new_deals_data.append(deal)
+                deals_found_count += 1
+                status.update(label=f"Scan in progress... Found {deals_found_count} deals. Latest: **{deal.get('company')}**")
+
+            if not new_deals_data:
+                status.update(label="Scan complete. No new deals found.", state="complete", expanded=False)
+                time.sleep(2)
+                return
+
+    if not new_deals_data:
+        st.warning("No new deals found in this scan.")
+        return load_existing_data(data_manager)
+
+    with st.spinner("Storing validated deals..."):
         data_manager.save_funding_data(new_deals_data)
-        status.update(label=f"Success! Added {len(new_deals_data)} new deals.", state="complete", expanded=False)
+        st.success(f"✅ Added {len(new_deals_data)} new deals.")
         time.sleep(2)
+        return load_existing_data(data_manager)
 
 def load_existing_data(data_manager) -> FundingEventCollection:
     """Load existing funding data from storage"""
@@ -47,29 +73,27 @@ def load_existing_data(data_manager) -> FundingEventCollection:
         df = data_manager.load_funding_data()
         if df.empty:
             return FundingEventCollection([])
-        
         events = [FundingEvent.from_dict(row.to_dict()) for _, row in df.iterrows()]
         return FundingEventCollection(events)
-        
     except Exception as e:
         st.error(f"Error loading existing data: {e}")
         return FundingEventCollection([])
 
 def main():
-    """Main application entry point"""
+    """Enhanced main application entry point with advanced analytics"""
     components = initialize_app()
     data_manager = components['data_manager']
     dashboard = components['dashboard']
-    
-    # --- This is a much cleaner control flow ---
+    data_integrator = components['data_integrator']
+    predictive_analytics = components['predictive_analytics']
+    investor_intelligence = components['investor_intelligence']
 
-    # 1. Set up sidebar and session state flags
+    # Sidebar setup
     with st.sidebar:
         st.header("Deal Flow Controls")
         st.subheader("⚡ Data Collection")
         
-        if st.button("🔎 Find New Deals", type="primary", key="sidebar_refresh",
-                    help="Scans CTVC for the latest funding deals. Stops after finding up to 15 new deals."):
+        if st.button("🔎 Find New Deals", type="primary", key="sidebar_refresh"):
             st.session_state['action'] = 'refresh'
             st.rerun()
         
@@ -77,19 +101,20 @@ def main():
             st.session_state['action'] = 'load_sample'
             st.rerun()
 
-        # --- THE NEW DEBUGGING TOOL ---
         st.subheader("⚠️ Danger Zone")
-        if st.button("🗑️ Clear All Data", help="Deletes the local CSV and log files to start fresh."):
+        if st.button("🗑️ Clear All Data"):
             st.session_state['action'] = 'clear_data'
             st.rerun()
 
-    # 2. Execute actions based on flags
-    if st.session_state.get('action') == 'refresh':
-        del st.session_state['action'] # Consume the flag
-        ingest_funding_data(data_manager)
-        st.rerun() # Force a final rerun to load the newly saved data
+    # Execute actions
+    action = st.session_state.get('action')
     
-    elif st.session_state.get('action') == 'load_sample':
+    if action == 'refresh':
+        del st.session_state['action']
+        events = ingest_funding_data(data_manager, data_integrator)
+        st.rerun()
+
+    elif action == 'load_sample':
         del st.session_state['action']
         with st.spinner("Loading focused VC sample data..."):
             sample_events_data = create_focused_vc_sample_data()
@@ -97,10 +122,9 @@ def main():
             st.success("✅ Loaded 10 focused VC deals")
         st.rerun()
 
-    elif st.session_state.get('action') == 'clear_data':
+    elif action == 'clear_data':
         del st.session_state['action']
         try:
-            # Manually delete the files
             if os.path.exists(data_manager.funding_file):
                 os.remove(data_manager.funding_file)
             if os.path.exists(data_manager.processed_urls_file):
@@ -111,9 +135,32 @@ def main():
             st.error(f"Error clearing data: {e}")
         st.rerun()
 
-    # 3. Always load data and render the dashboard on every run
+    # Load data every run
     events = load_existing_data(data_manager)
-    dashboard.render(events)
+
+    # Run enhanced analytics if requested
+    if st.session_state.get('run_enhanced_analytics'):
+        del st.session_state['run_enhanced_analytics']
+        with st.spinner("Running enhanced predictive analytics and investor intelligence..."):
+            df = events.to_dataframe()
+
+            forecast_results = predictive_analytics.enhanced_funding_forecast(df)
+            competitive_analysis = predictive_analytics.competitive_landscape_analysis(df)
+            investor_analysis = investor_intelligence.analyze_investor_ecosystem(df)
+
+            st.session_state['enhanced_results'] = {
+                'forecast': forecast_results,
+                'competitive': competitive_analysis,
+                'investor': investor_analysis
+            }
+            st.success("✅ Enhanced analytics complete")
+
+    # Render dashboard
+    dashboard.render(events, enhanced_components={
+        'predictive_analytics': predictive_analytics,
+        'investor_intelligence': investor_intelligence,
+        'data_integrator': data_integrator
+    })
 
 if __name__ == "__main__":
     main()
