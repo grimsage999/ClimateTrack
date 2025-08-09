@@ -5,6 +5,42 @@ from datetime import datetime
 from typing import Optional, Union
 import pandas as pd
 
+# --- NEW: Smart function to parse funding amount strings ---
+def parse_funding_amount(amount_str: Union[str, int, float]) -> float:
+    """
+    Parses a funding amount string (e.g., '$10M', '€2.5 billion') into a float in millions.
+    """
+    if pd.isna(amount_str) or amount_str is None:
+        return 0.0
+    if isinstance(amount_str, (int, float)):
+        return float(amount_str) # Assume it's already in millions if it's a number
+
+    text = str(amount_str).strip().lower()
+    if text in ['not specified', 'undisclosed', 'undisclosed amount']:
+        return 0.0
+
+    # Regular expression to find the number and the unit (M or B)
+    # Handles formats like: $10m, 10m, €10m, $10 million, 2.5b, etc.
+    match = re.search(r'(\d+(?:\.\d+)?)\s*(m|b|million|billion)', text)
+    
+    if match:
+        value = float(match.group(1))
+        unit = match.group(2)
+        
+        if unit in ['b', 'billion']:
+            return value * 1000  # Convert billions to millions
+        elif unit in ['m', 'million']:
+            return value # Already in millions
+            
+    # Fallback for plain numbers, assume they are in millions
+    try:
+        # Remove currency symbols and commas
+        plain_number_str = re.sub(r'[$,€£,]', '', text)
+        return float(plain_number_str)
+    except ValueError:
+        return 0.0 # Return 0.0 if no number can be parsed
+
+
 def format_currency(amount: Union[int, float]) -> str:
     """Format currency amounts in a human-readable way"""
     if pd.isna(amount) or amount is None:

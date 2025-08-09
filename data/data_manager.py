@@ -1,4 +1,4 @@
-# data/data_manager.py
+# data/data_manager.py (v2 - With Proactive Data Cleaning)
 
 import pandas as pd
 import json
@@ -14,18 +14,14 @@ class DataManager:
         self.data_dir = config.DATA_DIRECTORY
         self.funding_file = os.path.join(self.data_dir, config.FUNDING_DATA_FILE)
         self.metadata_file = os.path.join(self.data_dir, config.METADATA_FILE)
-        # --- NEW: Define the processed URLs log path ---
         self.processed_urls_file = os.path.join(self.data_dir, "processed_urls.log")
         self._ensure_data_directory()
     
     def _ensure_data_directory(self):
-        """Ensure data directory exists"""
         if not os.path.exists(self.data_dir):
             os.makedirs(self.data_dir)
     
-    # --- NEW: Method to load processed URLs ---
     def load_processed_urls(self) -> Set[str]:
-        """Loads the set of already processed URLs from a log file."""
         if not os.path.exists(self.processed_urls_file):
             return set()
         try:
@@ -35,9 +31,7 @@ class DataManager:
             print(f"   -> 🔴 Could not load processed URLs file: {e}")
             return set()
 
-    # --- NEW: Method to save a processed URL ---
     def add_processed_url(self, url: str):
-        """Appends a new URL to the processed URLs log file."""
         try:
             with open(self.processed_urls_file, 'a', encoding='utf-8') as f:
                 f.write(f"{url}\n")
@@ -45,7 +39,6 @@ class DataManager:
             print(f"   -> 🔴 Could not write to processed URLs file: {e}")
 
     def save_funding_data(self, funding_events: List[Dict]):
-        """Save funding events to CSV file, handling duplicates."""
         if not funding_events:
             return
         
@@ -55,9 +48,7 @@ class DataManager:
             if os.path.exists(self.funding_file):
                 existing_df = pd.read_csv(self.funding_file)
                 combined_df = pd.concat([existing_df, new_df], ignore_index=True)
-                # Ensure 'amount' is numeric for comparison
                 combined_df['amount'] = pd.to_numeric(combined_df['amount'], errors='coerce')
-                # Use a more robust deduplication key
                 dedupe_keys = ['company', 'amount', 'stage']
                 final_df = combined_df.drop_duplicates(subset=[k for k in dedupe_keys if k in combined_df.columns], keep='last')
             else:
@@ -68,14 +59,28 @@ class DataManager:
             
         except Exception as e:
             print(f"Error saving funding data: {str(e)}")
-
-    # ... (rest of the file is unchanged)
+    
     def load_funding_data(self) -> pd.DataFrame:
-        """Load funding data from CSV file"""
+        """Load funding data from CSV file with proactive cleaning."""
         try:
             if os.path.exists(self.funding_file):
                 df = pd.read_csv(self.funding_file)
                 
+                # --- THIS IS THE FIX ---
+                # Define columns that should always be strings
+                string_columns = [
+                    'company', 'sector', 'stage', 'lead_investor', 'location', 
+                    'region', 'description', 'source_url', 'source', 
+                    'other_investors', 'keywords'
+                ]
+                
+                # Ensure all string columns exist before trying to fill them
+                for col in string_columns:
+                    if col in df.columns:
+                        # Replace NaN values with empty strings to prevent errors
+                        df[col] = df[col].fillna('')
+                # --- END OF FIX ---
+
                 # Convert date columns
                 if 'date' in df.columns:
                     df['date'] = pd.to_datetime(df['date'], errors='coerce')
@@ -100,9 +105,7 @@ class DataManager:
                 'data_sources': config.DATA_SOURCES,
                 'version': '1.0'
             }
-            
             with open(self.metadata_file, 'w') as f:
                 json.dump(metadata, f, indent=2)
-                
         except Exception as e:
             print(f"Error updating metadata: {str(e)}")
