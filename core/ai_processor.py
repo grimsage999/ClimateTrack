@@ -46,7 +46,6 @@ class AIProcessor:
             4. amount_raised: USD amount in millions
             5. lead_investor: Primary/lead investor (HIGHEST PRIORITY - VC firms track competitors)
             
-            IGNORE any funding events outside Grid Modernization or Carbon Capture.
             IGNORE any funding stages other than Seed or Series A.
             
             Respond with JSON in this exact format:

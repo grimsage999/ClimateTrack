@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Optional, Dict, List
 from datetime import datetime
 import json
+import pandas as pd
 
 @dataclass
 class FundingEvent:
@@ -58,20 +59,31 @@ class FundingEvent:
     
     @classmethod
     def from_dict(cls, data: Dict) -> 'FundingEvent':
-        """Create FundingEvent from dictionary data"""
-        return cls(
-            startup_name=data.get('company', ''),
-            subsector=data.get('sector', ''),
-            funding_stage=data.get('stage', ''),
-            amount_raised=float(data.get('amount', 0)),
-            lead_investor=data.get('lead_investor', ''),
-            published_date=data.get('date', ''),
-            source_url=data.get('source_url', ''),
-            source=data.get('source', ''),
-            region=data.get('region'),
-            confidence_score=float(data.get('confidence_score', 0)),
-            is_target_deal=bool(data.get('is_target_deal', False))
-        )
+        """Create FundingEvent from dictionary data with robust type conversion."""
+        try:
+            # --- THIS IS THE FIX ---
+            # Proactively handle potential conversion errors
+            amount = float(data.get('amount', 0.0)) if pd.notna(data.get('amount')) else 0.0
+            # --- END OF FIX ---
+            
+            return cls(
+                startup_name=str(data.get('company', '')),
+                subsector=str(data.get('sector', '')),
+                funding_stage=str(data.get('stage', '')),
+                amount_raised=amount,
+                lead_investor=str(data.get('lead_investor', '')),
+                published_date=str(data.get('date', '')),
+                source_url=str(data.get('source_url', '')),
+                source=str(data.get('source', '')),
+                region=str(data.get('region', '')),
+                confidence_score=float(data.get('confidence_score', 0.0)),
+                is_target_deal=bool(data.get('is_target_deal', False))
+            )
+        except (ValueError, TypeError) as e:
+            print(f"Error creating FundingEvent from dict: {data}. Error: {e}")
+            # Return a default/empty event or raise an exception
+            # For robustness, we'll return a non-deal event
+            return cls(startup_name="Invalid Data", subsector="", funding_stage="", amount_raised=0.0, lead_investor="", published_date="", source_url="", source="")
     
     def is_valid_vc_deal(self) -> bool:
         """Check if this meets VC associate criteria"""
